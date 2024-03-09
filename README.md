@@ -1,0 +1,1 @@
+To setup download cocos2d v4 and copy to root folder
