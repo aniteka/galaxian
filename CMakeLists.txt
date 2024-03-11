@@ -56,12 +56,12 @@ endif()
 
 # add cross-platforms source files and header files 
 list(APPEND GAME_SOURCE
-     Classes/AppDelegate.cpp
-     Classes/HelloWorldScene.cpp
+        Classes/AppDelegate.cpp
+        Classes/MainScene.cpp
      )
 list(APPEND GAME_HEADER
-     Classes/AppDelegate.h
-     Classes/HelloWorldScene.h
+        Classes/AppDelegate.h
+        Classes/MainScene.h
      )
 
 if(ANDROID)
@@ -118,9 +118,12 @@ endif()
 
 # mark app complie info and libs info
 set(all_code_files
-    ${GAME_HEADER}
-    ${GAME_SOURCE}
-    )
+        ${GAME_HEADER}
+        ${GAME_SOURCE}
+        Classes/Utilities.h
+        Classes/Actors/PlayerShip.cpp
+        Classes/Actors/PlayerShip.h
+)
 if(NOT ANDROID)
     add_executable(${APP_NAME} ${all_code_files})
 else()
