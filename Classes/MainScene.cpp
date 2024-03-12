@@ -1,3 +1,4 @@
+#include <iostream>
 #include "MainScene.h"
 #include "Actors/PlayerShip.h"
 #include "Utilities.h"
@@ -11,38 +12,39 @@ Scene* MainScene::createScene()
 
 bool MainScene::init()
 {
-    if ( !Scene::init() )
+    if (!Scene::init())
     {
         return false;
     }
 
     const auto backgroundSprite = Sprite::create("Background.png");
-    if(backgroundSprite)
+    if (backgroundSprite)
     {
         this->addChild(backgroundSprite, 0);
-        backgroundSprite->setAnchorPoint(Vec2(0,0));
-        backgroundSprite->setScale(0.534f);
+        backgroundSprite->setAnchorPoint(Vec2(0, 0));
+        backgroundSprite->setScale(Director::getInstance()->getVisibleSize().height
+                                   / backgroundSprite->getContentSize().height);
     }
     else
     {
-        perror(GENERATE_ERROR_MESSAGE(backgroundSprite));
+        std::cout << GENERATE_ERROR_MESSAGE(backgroundSprite);
     }
 
     const auto playerShip = PlayerShip::createSprite();
-    if(playerShip)
+    if (playerShip)
     {
         this->addChild(playerShip, 1);
 
         playerShip->setPosition(Director::getInstance()->getVisibleSize() / 2);
 
-        const auto a =  MoveTo::create(5, Director::getInstance()->getVisibleSize());
+        const auto a = MoveTo::create(5, Director::getInstance()->getVisibleSize());
         const auto delay = DelayTime::create(5);
-        const auto b =  MoveTo::create(5, Director::getInstance()->getVisibleSize() / 2);
+        const auto b = MoveTo::create(5, Director::getInstance()->getVisibleSize() / 2);
         playerShip->runAction(Sequence::create(a, delay, b, nullptr));
     }
     else
     {
-        perror(GENERATE_ERROR_MESSAGE(playerShip));
+        std::cout << GENERATE_ERROR_MESSAGE(playerShip);
     }
 
     return true;

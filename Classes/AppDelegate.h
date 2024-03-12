@@ -1,6 +1,7 @@
 #ifndef  _APP_DELEGATE_H_
 #define  _APP_DELEGATE_H_
 
+#include <fstream>
 #include "cocos2d.h"
 
 class  AppDelegate : private cocos2d::Application
@@ -16,6 +17,11 @@ public:
     virtual void applicationDidEnterBackground();
 
     virtual void applicationWillEnterForeground();
+
+private:
+#ifndef NDEBUG
+    std::ofstream coutFile;
+#endif
 };
 
 #endif // _APP_DELEGATE_H_

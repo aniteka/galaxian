@@ -1,3 +1,5 @@
+#include <fstream>
+#include <iostream>
 #include "AppDelegate.h"
 #include "MainScene.h"
 
@@ -19,7 +21,7 @@ AppDelegate::AppDelegate()
 {
 }
 
-AppDelegate::~AppDelegate() 
+AppDelegate::~AppDelegate()
 {
 #if USE_AUDIO_ENGINE
     AudioEngine::end();
@@ -28,7 +30,7 @@ AppDelegate::~AppDelegate()
 
 void AppDelegate::initGLContextAttrs()
 {
-    GLContextAttrs glContextAttrs = {8, 8, 8, 8, 24, 8, 0};
+    GLContextAttrs glContextAttrs = { 8, 8, 8, 8, 24, 8, 0 };
 
     GLView::setGLContextAttrs(glContextAttrs);
 }
@@ -38,12 +40,23 @@ static int register_all_packages()
     return 0;
 }
 
-bool AppDelegate::applicationDidFinishLaunching() {
+bool AppDelegate::applicationDidFinishLaunching()
+{
+#ifndef NDEBUG
+    /*
+     * Reopen the cout stream to output to a file
+     */
+    coutFile.open("log.txt");
+    std::cout.rdbuf(coutFile.rdbuf());
+#endif
+
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
-    if(!glview) {
+    if (!glview)
+    {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-        glview = GLViewImpl::createWithRect("galaxian", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+        glview = GLViewImpl::createWithRect("galaxian",
+                cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 #else
         glview = GLViewImpl::create("galaxian");
 #endif
@@ -54,9 +67,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     director->setAnimationInterval(1.0f / 60);
 
-    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::NO_BORDER);
+    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height,
+            ResolutionPolicy::NO_BORDER);
 
-
+/*
     auto frameSize = glview->getFrameSize();
 
     if (frameSize.height > mediumResolutionSize.height)
@@ -70,7 +84,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     else
     {        
         director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
-    }
+    }*/
 
     register_all_packages();
 
@@ -81,7 +95,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     return true;
 }
 
-void AppDelegate::applicationDidEnterBackground() {
+void AppDelegate::applicationDidEnterBackground()
+{
     Director::getInstance()->stopAnimation();
 
 #if USE_AUDIO_ENGINE
@@ -89,7 +104,8 @@ void AppDelegate::applicationDidEnterBackground() {
 #endif
 }
 
-void AppDelegate::applicationWillEnterForeground() {
+void AppDelegate::applicationWillEnterForeground()
+{
     Director::getInstance()->startAnimation();
 
 #if USE_AUDIO_ENGINE

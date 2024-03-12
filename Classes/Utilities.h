@@ -8,6 +8,6 @@
 #define TO_STR_COV(TO_CONV) TO_STR(TO_CONV)
 
 #define GENERATE_ERROR_MESSAGE(ERROR_CAUSER) \
-    (__FILE__ "(" TO_STR_COV(__LINE__) ")" ": " #ERROR_CAUSER)
+    (ERROR_CAUSER, "Error: " __FILE__ "(" TO_STR_COV(__LINE__) ")" ": " #ERROR_CAUSER "\n")
 
 #endif //GALAXIAN_UTILITIES_H
