@@ -35,12 +35,9 @@ bool MainScene::init()
     {
         this->addChild(playerShip, 1);
 
-        playerShip->setPosition(Director::getInstance()->getVisibleSize() / 2);
-
-        const auto a = MoveTo::create(5, Director::getInstance()->getVisibleSize());
-        const auto delay = DelayTime::create(5);
-        const auto b = MoveTo::create(5, Director::getInstance()->getVisibleSize() / 2);
-        playerShip->runAction(Sequence::create(a, delay, b, nullptr));
+        playerShip->setPosition(
+                Director::getInstance()->getVisibleSize().width / 2.f,
+                Director::getInstance()->getVisibleSize().height * 0.1f);
     }
     else
     {

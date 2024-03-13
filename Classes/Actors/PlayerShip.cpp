@@ -22,7 +22,21 @@ bool PlayerShip::init()
 
     setupBody();
 
+    this->scheduleUpdate();
     return true;
+}
+
+void PlayerShip::update(float delta)
+{
+    if(movingLeftState)
+    {
+        this->setPosition(Vec2(this->getPosition().x - 5, this->getPosition().y));
+    }
+
+    if(movingRightState)
+    {
+        this->setPosition(Vec2(this->getPosition().x + 5, this->getPosition().y));
+    }
 }
 
 void PlayerShip::setupKeyboard()
@@ -55,10 +69,31 @@ void PlayerShip::setupBody()
 
 void PlayerShip::onKeyPressedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
 {
-    std::cout << "Press: " << (int)keyCode << std::endl;
+    this->stopAllActions();
+
+    switch ((int)keyCode)
+    {
+    case 26:
+        movingLeftState = true;
+        break;
+    case 27:
+        movingRightState = true;
+        break;
+    }
 }
 
 void PlayerShip::onKeyReleasedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
 {
-    std::cout << "Release: " << (int)keyCode << std::endl;
+    this->stopAllActions();
+
+
+    switch ((int)keyCode)
+    {
+    case 26:
+        movingLeftState = false;
+        break;
+    case 27:
+        movingRightState = false;
+        break;
+    }
 }

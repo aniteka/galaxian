@@ -2,13 +2,15 @@
 #define GALAXIAN_PLAYERSHIP_H
 
 #include <cocos2d.h>
+#include <Utilities.h>
 
 class PlayerShip : public cocos2d::Sprite
 {
 public:
     static cocos2d::Sprite* createSprite();
 
-    virtual bool init();
+    bool init() override;
+    void update(float delta) override;
 
     CREATE_FUNC(PlayerShip);
 
@@ -23,6 +25,9 @@ protected:
     cocos2d::Sprite* body = nullptr;
 
     cocos2d::EventListenerKeyboard* keyboardListener = nullptr;
+
+    bool movingLeftState = false;
+    bool movingRightState = false;
 
 private:
     static const char* const BODY_SPRITE;
