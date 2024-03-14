@@ -1,19 +1,18 @@
 #include <iostream>
 #include "PlayerShip.h"
+#include "Projectile.h"
 #include "Utilities.h"
 
 USING_NS_CC;
 
-const char* const PlayerShip::BODY_SPRITE = "DEV/DevA.png";
-
-cocos2d::Sprite* PlayerShip::createSprite()
+cocos2d::Sprite *PlayerShip::createSprite()
 {
     return PlayerShip::create();
 }
 
 bool PlayerShip::init()
 {
-    if(!Sprite::init())
+    if (!Sprite::init())
     {
         return false;
     }
@@ -22,27 +21,65 @@ bool PlayerShip::init()
 
     setupBody();
 
+    setupProjectileView();
+
     this->scheduleUpdate();
     return true;
 }
 
 void PlayerShip::update(float delta)
 {
-    if(movingLeftState)
-    {
-        this->setPosition(Vec2(this->getPosition().x - 5, this->getPosition().y));
-    }
+    Sprite::update(delta);
 
-    if(movingRightState)
+    movingUpdate();
+}
+
+
+float PlayerShip::getVisibleBodySizeWidth() const
+{
+    return body->getContentSize().width * body->getScaleX();
+}
+
+float PlayerShip::getVisibleBodySizeHeight() const
+{
+    return body->getContentSize().height * body->getScaleY();
+}
+
+void PlayerShip::setupBody()
+{
+    body = Sprite::create(BODY_SPRITE);
+    if (!body)
     {
-        this->setPosition(Vec2(this->getPosition().x + 5, this->getPosition().y));
+        std::cout << GENERATE_ERROR_MESSAGE(body);
+        return;
+    }
+    addChild(body);
+
+    body->setScale(0.1);
+}
+
+void PlayerShip::setupProjectileView()
+{
+    projectileView = Projectile::createProjectile();
+    if(projectileView)
+    {
+        this->addChild(projectileView);
+
+        auto pos = Vec2(0,0);
+        pos.y = getVisibleBodySizeHeight() / 2.f;
+
+        projectileView->setPosition(pos);
+    }
+    else
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(projectileView);
     }
 }
 
 void PlayerShip::setupKeyboard()
 {
     keyboardListener = EventListenerKeyboard::create();
-    if(!keyboardListener)
+    if (!keyboardListener)
     {
         std::cout << GENERATE_ERROR_MESSAGE(keyboardListener);
         return;
@@ -54,46 +91,104 @@ void PlayerShip::setupKeyboard()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 }
 
-void PlayerShip::setupBody()
+void PlayerShip::movingUpdate()
 {
-    body = Sprite::create(BODY_SPRITE);
-    if(!body)
+    const auto director = Director::getInstance();
+    if (!director)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(body);
+        std::cout << GENERATE_ERROR_MESSAGE(director);
         return;
     }
-    addChild(body);
 
-    body->setScale(0.1);
-}
+    const auto bodyHalfSize = getVisibleBodySizeWidth() / 2.f;
 
-void PlayerShip::onKeyPressedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
-{
-    this->stopAllActions();
-
-    switch ((int)keyCode)
+    if (movingLeftState)
     {
-    case 26:
-        movingLeftState = true;
-        break;
-    case 27:
-        movingRightState = true;
-        break;
+        auto newXPos = getPosition().x - speed;
+        newXPos = clampf(newXPos,
+                         0 + bodyHalfSize,
+                         director->getVisibleSize().width - bodyHalfSize);
+        setPosition(Vec2(newXPos, getPosition().y));
+    }
+
+    if (movingRightState)
+    {
+        auto newXPos = getPosition().x + speed;
+        newXPos = clampf(newXPos,
+                         0 + bodyHalfSize,
+                         director->getVisibleSize().width - bodyHalfSize);
+        setPosition(Vec2(newXPos, getPosition().y));
     }
 }
 
-void PlayerShip::onKeyReleasedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
+void PlayerShip::shoot()
+{
+    const auto director = Director::getInstance();
+    if(!director)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(director);
+        return;
+    }
+    const auto scene = director->getRunningScene();
+    if(!scene)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(scene);
+        return;
+    }
+
+    projectileReal = Projectile::createProjectile();
+    if(projectileReal)
+    {
+        scene->addChild(projectileReal);
+
+        auto pos = this->getPosition();
+        pos.y += getVisibleBodySizeHeight() / 2.f;
+
+        projectileReal->setPosition(pos);
+
+        projectileReal->launch();
+    }
+    else
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(projectileReal);
+    }
+
+    if(projectileView)
+    {
+        projectileView->setVisible(false);
+    }
+}
+
+void PlayerShip::onKeyPressedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
+{
+    this->stopAllActions();
+
+    switch ((int) keyCode)
+    {
+        case 26: // Left key
+            movingLeftState = true;
+            break;
+        case 27: // Right key
+            movingRightState = true;
+            break;
+        case 28: // Up key
+            shoot();
+    }
+}
+
+void PlayerShip::onKeyReleasedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
 {
     this->stopAllActions();
 
 
-    switch ((int)keyCode)
+    switch ((int) keyCode)
     {
-    case 26:
-        movingLeftState = false;
-        break;
-    case 27:
-        movingRightState = false;
-        break;
+        case 26: // Left key
+            movingLeftState = false;
+            break;
+        case 27: // Right key
+            movingRightState = false;
+            break;
     }
 }
+

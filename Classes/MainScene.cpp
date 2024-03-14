@@ -17,12 +17,19 @@ bool MainScene::init()
         return false;
     }
 
+    const auto director = Director::getInstance();
+    if(!director)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(director);
+        return false;
+    }
+
     const auto backgroundSprite = Sprite::create("Background.png");
     if (backgroundSprite)
     {
         this->addChild(backgroundSprite, 0);
         backgroundSprite->setAnchorPoint(Vec2(0, 0));
-        backgroundSprite->setScale(Director::getInstance()->getVisibleSize().height
+        backgroundSprite->setScale(director->getVisibleSize().height
                                    / backgroundSprite->getContentSize().height);
     }
     else
@@ -36,8 +43,8 @@ bool MainScene::init()
         this->addChild(playerShip, 1);
 
         playerShip->setPosition(
-                Director::getInstance()->getVisibleSize().width / 2.f,
-                Director::getInstance()->getVisibleSize().height * 0.1f);
+                director->getVisibleSize().width / 2.f,
+                director->getVisibleSize().height * 0.1f);
     }
     else
     {

@@ -4,6 +4,8 @@
 #include <cocos2d.h>
 #include <Utilities.h>
 
+class Projectile;
+
 class PlayerShip : public cocos2d::Sprite
 {
 public:
@@ -12,25 +14,34 @@ public:
     bool init() override;
     void update(float delta) override;
 
+    float getVisibleBodySizeWidth() const;
+    float getVisibleBodySizeHeight() const;
+
     CREATE_FUNC(PlayerShip);
 
 protected:
     void setupBody();
+    void setupProjectileView();
     void setupKeyboard();
+
+    void movingUpdate();
+
+    void shoot();
 
     void onKeyPressedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void onKeyReleasedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 
 protected:
     cocos2d::Sprite* body = nullptr;
+    Projectile* projectileView = nullptr;
+    Projectile* projectileReal = nullptr;
 
     cocos2d::EventListenerKeyboard* keyboardListener = nullptr;
 
+    float speed = 5.f;
+
     bool movingLeftState = false;
     bool movingRightState = false;
-
-private:
-    static const char* const BODY_SPRITE;
 };
 
 

@@ -123,6 +123,8 @@ set(all_code_files
         Classes/Utilities.h
         Classes/Actors/PlayerShip.cpp
         Classes/Actors/PlayerShip.h
+        Classes/Actors/Projectile.cpp
+        Classes/Actors/Projectile.h
 )
 if(NOT ANDROID)
     add_executable(${APP_NAME} ${all_code_files})

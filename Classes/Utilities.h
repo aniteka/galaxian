@@ -10,4 +10,7 @@
 #define GENERATE_ERROR_MESSAGE(ERROR_CAUSER) \
     (ERROR_CAUSER, "Error: " __FILE__ "(" TO_STR_COV(__LINE__) ")" ": " #ERROR_CAUSER "\n")
 
+#define BODY_SPRITE             "DEV/DevA.png"
+#define PROJECTILE_SPRITE       "DEV/DevB.png"
+
 #endif //GALAXIAN_UTILITIES_H
