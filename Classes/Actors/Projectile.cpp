@@ -34,6 +34,8 @@ void Projectile::update(float delta)
     if(hasLaunched)
     {
         setPosition(Vec2(getPosition().x, getPosition().y + speed));
+
+        collisionUpdate(delta);
     }
 }
 
@@ -50,4 +52,23 @@ float Projectile::getVisibleSizeHeight() const
 void Projectile::launch()
 {
     hasLaunched = true;
+}
+
+void Projectile::collisionUpdate(float delta)
+{
+    const auto director = Director::getInstance();
+    if(!director)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(director);
+        return;
+    }
+
+    const auto windowSize = director->getVisibleSize();
+
+    if(windowSize.height < this->getPositionY())
+    {
+        onHit(nullptr);
+        this->removeFromParent();
+        return;
+    }
 }

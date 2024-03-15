@@ -28,6 +28,7 @@ protected:
 
     void shoot();
 
+    void onProjectileHit(cocos2d::Sprite* hitSprite);
     void onKeyPressedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void onKeyReleasedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 

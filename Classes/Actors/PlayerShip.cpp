@@ -123,6 +123,9 @@ void PlayerShip::movingUpdate()
 
 void PlayerShip::shoot()
 {
+    if(projectileReal)
+        return;
+
     const auto director = Director::getInstance();
     if(!director)
     {
@@ -144,6 +147,8 @@ void PlayerShip::shoot()
         auto pos = this->getPosition();
         pos.y += getVisibleBodySizeHeight() / 2.f;
 
+        projectileReal->onHit = CC_CALLBACK_1(PlayerShip::onProjectileHit, this);
+
         projectileReal->setPosition(pos);
 
         projectileReal->launch();
@@ -157,6 +162,12 @@ void PlayerShip::shoot()
     {
         projectileView->setVisible(false);
     }
+}
+
+void PlayerShip::onProjectileHit(cocos2d::Sprite* hitSprite)
+{
+    projectileReal = nullptr;
+    projectileView->setVisible(true);
 }
 
 void PlayerShip::onKeyPressedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)
@@ -180,7 +191,6 @@ void PlayerShip::onKeyReleasedCallback(cocos2d::EventKeyboard::KeyCode keyCode, 
 {
     this->stopAllActions();
 
-
     switch ((int) keyCode)
     {
         case 26: // Left key
@@ -191,4 +201,3 @@ void PlayerShip::onKeyReleasedCallback(cocos2d::EventKeyboard::KeyCode keyCode, 
             break;
     }
 }
-

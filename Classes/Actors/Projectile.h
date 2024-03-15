@@ -18,7 +18,11 @@ public:
 
     CREATE_FUNC(Projectile);
 
+    std::function<void(cocos2d::Sprite*/*hit sprite(nullable)*/)> onHit;
+
 protected:
+    void collisionUpdate(float delta);
+
     float speed = 6.f;
 
 private:
