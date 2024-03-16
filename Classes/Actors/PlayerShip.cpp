@@ -5,7 +5,7 @@
 
 USING_NS_CC;
 
-cocos2d::Sprite *PlayerShip::createSprite()
+PlayerShip* PlayerShip::createPlayerShip()
 {
     return PlayerShip::create();
 }

@@ -1,11 +1,15 @@
 #include <iostream>
 #include "EnemyShip.h"
 #include "Utilities.h"
+#include "MainScene.h"
+#include "Actors/PlayerShip.h"
 
-EnemyShip* EnemyShip::createEnemyShip(EnemyType inEnemyType)
+USING_NS_CC;
+
+EnemyShip *EnemyShip::createEnemyShip(EnemyType inEnemyType)
 {
     auto pRet = new(std::nothrow)EnemyShip();
-    if(pRet)
+    if (pRet)
     {
         pRet->enemyType = inEnemyType;
     }
@@ -26,31 +30,33 @@ EnemyShip* EnemyShip::createEnemyShip(EnemyType inEnemyType)
 
 bool EnemyShip::init()
 {
-    const char* enemyShipFile;
-    switch(enemyType)
+    const char *enemyShipFile;
+    switch (enemyType)
     {
-    case EnemyType::Blue:
-        enemyShipFile = ENEMY_BLUE_SPRITE;
-        break;
-    case EnemyType::Purple:
-        enemyShipFile = ENEMY_PURPLE_SPRITE;
-        break;
-    case EnemyType::Red:
-        enemyShipFile = ENEMY_RED_SPRITE;
-        break;
-    case EnemyType::Flagship:
-        enemyShipFile = ENEMY_FLAGSHIP_SPRITE;
-        break;
-    case EnemyType::None: default:
-        std::cout << GENERATE_ERROR_MESSAGE(enemyType);
+        case EnemyType::Blue:
+            enemyShipFile = ENEMY_BLUE_SPRITE;
+            break;
+        case EnemyType::Purple:
+            enemyShipFile = ENEMY_PURPLE_SPRITE;
+            break;
+        case EnemyType::Red:
+            enemyShipFile = ENEMY_RED_SPRITE;
+            break;
+        case EnemyType::Flagship:
+            enemyShipFile = ENEMY_FLAGSHIP_SPRITE;
+            break;
+        case EnemyType::None:
+        default:
+            std::cout << GENERATE_ERROR_MESSAGE(enemyType);
+            return false;
+    }
+
+    if (!Sprite::initWithFile(enemyShipFile))
+    {
         return false;
     }
 
-    if(!Sprite::initWithFile(enemyShipFile))
-    {
-        return false;
-    }
-
+    this->scheduleUpdate();
     return true;
 }
 
@@ -58,6 +64,7 @@ void EnemyShip::update(float delta)
 {
     Node::update(delta);
 
+    rotateToPlayerShipUpdate(delta);
 }
 
 float EnemyShip::getVisibleSizeWidth() const
@@ -68,4 +75,82 @@ float EnemyShip::getVisibleSizeWidth() const
 float EnemyShip::getVisibleSizeHeight() const
 {
     return this->getContentSize().height * this->getScaleY();
+}
+
+void EnemyShip::launch()
+{
+    const auto mainScene = getRunningScene<MainScene *>();
+    if (!mainScene)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(mainScene);
+        return;
+    }
+
+    playerShip = playerShip ? playerShip : mainScene->getPlayerShip();
+    if (!playerShip)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(playerShip);
+        return;
+    }
+
+    ccBezierConfig bezierConfig;
+    bezierConfig.controlPoint_1 = Vec2(200, 100);
+    bezierConfig.controlPoint_2 = (playerShip->getPosition() - this->getPosition()) + Vec2(100, 400);
+    bezierConfig.endPosition = playerShip->getPosition() - this->getPosition() - Vec2(0, 100);
+    auto bb = BezierBy::create(5, bezierConfig);
+
+    this->runAction(bb);
+
+    isLaunched = true;
+}
+
+void EnemyShip::rotateToPlayerShipUpdate(float delta)
+{
+    if (!isLaunched) return;
+    if(this->getPosition().y < 100) return;
+
+    const auto mainScene = getRunningScene<MainScene *>();
+    if (!mainScene)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(mainScene);
+        return;
+    }
+
+    playerShip = playerShip ? playerShip : mainScene->getPlayerShip();
+    if (!playerShip)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(playerShip);
+        return;
+    }
+
+    rotateToPoint(playerShip->getPosition());
+}
+
+void EnemyShip::rotateToPoint(cocos2d::Point point)
+{
+    float nodeCurrentAngle = this->getRotation();
+    if (nodeCurrentAngle >= 180.f)
+    {
+        nodeCurrentAngle -= 360.f;
+    } else if (nodeCurrentAngle < -180.f)
+    {
+        nodeCurrentAngle += 360.f;
+    }
+
+    auto vectorFromVec1ToVec2 = this->getPosition() - point;
+    float angleNodeToRotateTo = CC_RADIANS_TO_DEGREES(-vectorFromVec1ToVec2.getAngle());
+
+    float diffAngle = (angleNodeToRotateTo - nodeCurrentAngle);
+    if(diffAngle >= 180.f)
+    {
+        diffAngle -= 360.f;
+    }
+    else if (diffAngle < -180.f)
+    {
+        diffAngle +=360.f;
+    }
+
+    float rotation = nodeCurrentAngle + diffAngle + 90.f;
+
+    this->setRotation(rotation);
 }

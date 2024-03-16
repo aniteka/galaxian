@@ -1,6 +1,7 @@
 #include "EnemyFactory.h"
 #include "EnemyShip.h"
 #include "Utilities.h"
+#include "MainScene.h"
 #include <iostream>
 
 USING_NS_CC;
@@ -27,7 +28,6 @@ bool EnemyFactory::init()
     {
         this->spawnEnemyRow(10, -45.f * (float)i, EnemyType::Blue);
     }
-
     this->spawnEnemyRow(8, 45.f, EnemyType::Purple);
     this->spawnEnemyRow(6, 45.f * 2.f, EnemyType::Red);
 
@@ -54,6 +54,9 @@ void EnemyFactory::moveUpdate(float interval)
     if (getPositionX() >= (director->getVisibleSize().width / 2.f) + 64.f
         || getPositionX() <= (director->getVisibleSize().width / 2.f) - 64.f)
     {
+        const auto toLaunch = spawnCopyOfEnemy(enemyShips[0]);
+        toLaunch->launch();
+
         movingRight = !movingRight;
         if (movingRight)
             movingDirMul = 1.f;
@@ -67,7 +70,7 @@ void EnemyFactory::moveUpdate(float interval)
 
 EnemyShip* EnemyFactory::spawnEnemyShip(EnemyType enemyType)
 {
-    auto enemyShip = EnemyShip::createEnemyShip(enemyType);
+    const auto enemyShip = EnemyShip::createEnemyShip(enemyType);
     if (!enemyShip)
     {
         std::cout << GENERATE_ERROR_MESSAGE(enemyShip);
@@ -112,4 +115,30 @@ void EnemyFactory::spawnEnemyRow(int count, const float y, EnemyType enemyType)
 
         ship->setPosition(x, y);
     }
+}
+
+EnemyShip *EnemyFactory::spawnCopyOfEnemy(EnemyShip *toCopy) const
+{
+    const auto mainScene = getRunningScene<MainScene*>();
+    if(!mainScene)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(mainScene);
+        return nullptr;
+    }
+
+    const auto enemyShip = EnemyShip::createEnemyShip(toCopy->getEnemyType());
+    if (!enemyShip)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(enemyShip);
+        return nullptr;
+    }
+    mainScene->addChild(enemyShip);
+
+    enemyShip->setPosition(this->convertToWorldSpace(toCopy->getPosition()));
+
+    // TODO DEBUG ONLY
+    enemyShip->setScale(0.4f);
+    // TODO DEBUG ONLY
+
+    return enemyShip;
 }

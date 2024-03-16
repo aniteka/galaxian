@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 
+class PlayerShip;
 class EnemyFactory;
 
 class MainScene : public cocos2d::Scene
@@ -12,12 +13,14 @@ public:
 
     virtual bool init();
 
-    EnemyFactory* getEnemyFactory() const { return enemyFactory; }
+    EnemyFactory* getEnemyFactory() { return enemyFactory; }
+    PlayerShip* getPlayerShip() { return playerShip; }
 
     CREATE_FUNC(MainScene);
 
 protected:
     EnemyFactory* enemyFactory;
+    PlayerShip* playerShip;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

@@ -2,6 +2,7 @@
 #define GALAXIAN_UTILITIES_H
 
 #include <string>
+#include <iostream>
 #include "cocos2d.h"
 
 #define TO_STR(TO_CONV) #TO_CONV
@@ -17,5 +18,25 @@
 #define ENEMY_PURPLE_SPRITE     "DEV/DevPurple.png"
 #define ENEMY_RED_SPRITE        "DEV/DevRed.png"
 #define ENEMY_FLAGSHIP_SPRITE   "DEV/DevFlagship"
+
+template<class T>
+T getRunningScene()
+{
+    const auto director = cocos2d::Director::getInstance();
+    if (!director)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(director);
+        return nullptr;
+    }
+
+    const auto scene = dynamic_cast<T>(director->getRunningScene());
+    if(!scene)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(scene);
+        return nullptr;
+    }
+
+    return scene;
+}
 
 #endif //GALAXIAN_UTILITIES_H

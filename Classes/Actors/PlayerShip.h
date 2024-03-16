@@ -9,7 +9,7 @@ class Projectile;
 class PlayerShip : public cocos2d::Sprite
 {
 public:
-    static cocos2d::Sprite* createSprite();
+    static PlayerShip* createPlayerShip();
 
     bool init() override;
     void update(float delta) override;

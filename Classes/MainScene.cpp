@@ -38,7 +38,7 @@ bool MainScene::init()
         std::cout << GENERATE_ERROR_MESSAGE(backgroundSprite);
     }
 
-    const auto playerShip = PlayerShip::createSprite();
+    playerShip = PlayerShip::createPlayerShip();
     if (playerShip)
     {
         this->addChild(playerShip, 1);

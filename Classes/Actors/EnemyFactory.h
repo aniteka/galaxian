@@ -23,6 +23,8 @@ protected:
     EnemyShip* spawnEnemyShip(EnemyType enemyType);
     void spawnEnemyRow(int count, const float y, EnemyType enemyType);
 
+    EnemyShip* spawnCopyOfEnemy(EnemyShip* toCopy) const;
+
 protected:
     const std::string moveUpdateKey = "moveUpdate";
     bool movingRight = true;
