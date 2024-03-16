@@ -5,11 +5,6 @@
 
 USING_NS_CC;
 
-PlayerShip* PlayerShip::createPlayerShip()
-{
-    return PlayerShip::create();
-}
-
 bool PlayerShip::init()
 {
     if (!Sprite::init())
@@ -60,7 +55,7 @@ void PlayerShip::setupBody()
 
 void PlayerShip::setupProjectileView()
 {
-    projectileView = Projectile::createProjectile();
+    projectileView = Projectile::create();
     if(projectileView)
     {
         this->addChild(projectileView);
@@ -139,7 +134,7 @@ void PlayerShip::shoot()
         return;
     }
 
-    projectileReal = Projectile::createProjectile();
+    projectileReal = Projectile::create();
     if(projectileReal)
     {
         scene->addChild(projectileReal);

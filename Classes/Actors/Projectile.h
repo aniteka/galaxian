@@ -4,12 +4,13 @@
 #include <cocos2d.h>
 
 class MainScene;
+class PlayerShip;
+
+#define PROJECTILE_TAG 1
 
 class Projectile : public cocos2d::Sprite
 {
 public:
-    static Projectile* createProjectile();
-
     bool init() override;
     void update(float delta) override;
 
@@ -24,6 +25,7 @@ public:
 
 protected:
     void collisionUpdate(float delta);
+    bool onContactBegin(cocos2d::PhysicsContact& contact);
 
     float speed = 6.f;
 

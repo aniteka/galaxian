@@ -6,7 +6,9 @@
 class PlayerShip;
 class EnemyFactory;
 
-class MainScene : public cocos2d::Scene
+#define MAIN_SCENE_NAME "MainScene"
+
+class MainScene : public cocos2d::Layer
 {
 public:
     static cocos2d::Scene* createScene();

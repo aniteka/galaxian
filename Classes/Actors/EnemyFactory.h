@@ -7,8 +7,6 @@
 class EnemyFactory : public cocos2d::Node
 {
 public:
-    static EnemyFactory* createEnemyFactory();
-
     bool init() override;
     void update(float delta) override;
 

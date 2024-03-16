@@ -5,6 +5,8 @@
 
 class PlayerShip;
 
+#define ENEMY_SHIP_TAG 2
+
 enum class EnemyType
 {
     Blue = 1, Purple, Red, Flagship,

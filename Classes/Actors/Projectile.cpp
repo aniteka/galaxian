@@ -7,11 +7,6 @@
 
 USING_NS_CC;
 
-Projectile* Projectile::createProjectile()
-{
-    return Projectile::create();
-}
-
 bool Projectile::init()
 {
     if(!Sprite::initWithFile(PROJECTILE_SPRITE))
@@ -19,12 +14,26 @@ bool Projectile::init()
         return false;
     }
 
+    this->setTag(PROJECTILE_TAG);
+
     // TODO DEBUG ONLY
     this->setScaleX(0.1);
     this->setScaleY(0.3);
     // TODO DEBUG ONLY
 
     this->setAnchorPoint(Vec2(0.5, 0));
+
+    const auto physicsBody = PhysicsBody::createBox(Size(
+            this->getVisibleSizeWidth() * 10,
+            this->getVisibleSizeHeight() * 3));
+    physicsBody->setDynamic(false);
+    physicsBody->setContactTestBitmask(0xFFFFFFFF);
+    physicsBody->setEnabled(false);
+    this->setPhysicsBody(physicsBody);
+
+    auto contactListener = EventListenerPhysicsContact::create();
+    contactListener->onContactBegin = CC_CALLBACK_1(Projectile::onContactBegin, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
     this->scheduleUpdate();
     return true;
@@ -55,6 +64,7 @@ float Projectile::getVisibleSizeHeight() const
 void Projectile::launch()
 {
     hasLaunched = true;
+    this->getPhysicsBody()->setEnabled(true);
 }
 
 void Projectile::collisionUpdate(float delta)
@@ -74,52 +84,30 @@ void Projectile::collisionUpdate(float delta)
         this->removeFromParent();
         return;
     }
+}
 
-    mainScene = mainScene ? mainScene : dynamic_cast<MainScene*>(director->getRunningScene());
-    if(!mainScene)
-    {
-        std::cout << GENERATE_ERROR_MESSAGE(mainScene);
-        return;
-    }
-    const auto enemyFactory = mainScene->getEnemyFactory();
-    if(!enemyFactory)
-    {
-        std::cout << GENERATE_ERROR_MESSAGE(enemyFactory);
-        return;
-    }
+bool Projectile::onContactBegin(PhysicsContact &contact)
+{
+    auto nodeA = contact.getShapeA()->getBody()->getNode();
+    auto nodeB = contact.getShapeB()->getBody()->getNode();
 
-    const auto& enemyShipArray = enemyFactory->getEnemyShipsArray();
-    for (const auto& ship : enemyShipArray)
+    if(nodeA && nodeB
+        && (nodeA->getTag() == PROJECTILE_TAG || nodeB->getTag() == PROJECTILE_TAG)
+        && (nodeA->getTag() == ENEMY_SHIP_TAG || nodeB->getTag() == ENEMY_SHIP_TAG))
     {
-        if(!ship)
+        const auto self = dynamic_cast<Projectile*>(nodeA->getTag() == PROJECTILE_TAG ? nodeA : nodeB);
+        const auto ship = dynamic_cast<EnemyShip*>(nodeA->getTag() == ENEMY_SHIP_TAG ? nodeA : nodeB);
+        if(!self || !ship)
         {
-            std::cout << GENERATE_ERROR_MESSAGE(ship);
-            continue;
+            std::cout << GENERATE_ERROR_MESSAGE(!self || !ship);
+            return false;
         }
 
-        if(!ship->isVisible()) continue;
+        ship->setVisible(false);
 
-        const auto posA = enemyFactory->convertToWorldSpace(ship->getPosition());
-        const auto aLeft    = posA.x    - ship->getVisibleSizeWidth() / 2.f;
-        const auto aRight   = posA.x    + ship->getVisibleSizeWidth() / 2.f;
-        const auto aTop     = posA.y    + ship->getVisibleSizeHeight() / 2.f;
-        const auto aBottom  = posA.y    - ship->getVisibleSizeHeight() / 2.f;
-
-        const auto posB = this->getPosition();
-        const auto bLeft    = posB.x    - this->getVisibleSizeWidth() / 2.f;
-        const auto bRight   = posB.x    + this->getVisibleSizeWidth() / 2.f;
-        const auto bTop     = posB.y    + this->getVisibleSizeHeight();
-        const auto bBottom  = posB.y    - 0.f;
-
-        if (aLeft < bRight && aRight > bLeft &&
-            aTop > bBottom && aBottom < bTop )
-        {
-            ship->setVisible(false);
-
-            onHit(nullptr);
-            this->removeFromParent();
-            return;
-        }
+        self->onHit(ship);
+        self->removeFromParent();
     }
 
+    return false;
 }

@@ -6,11 +6,6 @@
 
 USING_NS_CC;
 
-EnemyFactory *EnemyFactory::createEnemyFactory()
-{
-    return EnemyFactory::create();
-}
-
 bool EnemyFactory::init()
 {
     if (!Node::init())
@@ -117,9 +112,16 @@ void EnemyFactory::spawnEnemyRow(int count, const float y, EnemyType enemyType)
     }
 }
 
-EnemyShip *EnemyFactory::spawnCopyOfEnemy(EnemyShip *toCopy) const
+EnemyShip* EnemyFactory::spawnCopyOfEnemy(EnemyShip *toCopy) const
 {
-    const auto mainScene = getRunningScene<MainScene*>();
+    const auto director = Director::getInstance();
+    if(!director)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(director);
+        return nullptr;
+    }
+
+    const auto mainScene = dynamic_cast<MainScene*>(director->getRunningScene()->getChildByName(MAIN_SCENE_NAME));
     if(!mainScene)
     {
         std::cout << GENERATE_ERROR_MESSAGE(mainScene);

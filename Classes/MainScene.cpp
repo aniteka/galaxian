@@ -8,12 +8,16 @@ USING_NS_CC;
 
 Scene* MainScene::createScene()
 {
-    return MainScene::create();
+    const auto scene = Scene::createWithPhysics();
+    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    auto layer = MainScene::create();
+    scene->addChild(layer, 0, MAIN_SCENE_NAME);
+    return scene;
 }
 
 bool MainScene::init()
 {
-    if (!Scene::init())
+    if (!Layer::init())
     {
         return false;
     }
@@ -38,7 +42,7 @@ bool MainScene::init()
         std::cout << GENERATE_ERROR_MESSAGE(backgroundSprite);
     }
 
-    playerShip = PlayerShip::createPlayerShip();
+    playerShip = PlayerShip::create();
     if (playerShip)
     {
         this->addChild(playerShip, 1);
@@ -52,7 +56,7 @@ bool MainScene::init()
         std::cout << GENERATE_ERROR_MESSAGE(playerShip);
     }
 
-    enemyFactory = EnemyFactory::createEnemyFactory();
+    enemyFactory = EnemyFactory::create();
     if(enemyFactory)
     {
         this->addChild(enemyFactory);

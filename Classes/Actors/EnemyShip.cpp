@@ -6,7 +6,7 @@
 
 USING_NS_CC;
 
-EnemyShip *EnemyShip::createEnemyShip(EnemyType inEnemyType)
+EnemyShip* EnemyShip::createEnemyShip(EnemyType inEnemyType)
 {
     auto pRet = new(std::nothrow)EnemyShip();
     if (pRet)
@@ -30,7 +30,7 @@ EnemyShip *EnemyShip::createEnemyShip(EnemyType inEnemyType)
 
 bool EnemyShip::init()
 {
-    const char *enemyShipFile;
+    const char* enemyShipFile;
     switch (enemyType)
     {
         case EnemyType::Blue:
@@ -56,6 +56,15 @@ bool EnemyShip::init()
         return false;
     }
 
+    this->setTag(ENEMY_SHIP_TAG);
+
+    const auto physicsBody = PhysicsBody::createBox(Size(
+            this->getVisibleSizeWidth(),
+            this->getVisibleSizeHeight()));
+    physicsBody->setDynamic(false);
+    physicsBody->setContactTestBitmask(0xFFFFFFFF);
+    this->setPhysicsBody(physicsBody);
+
     this->scheduleUpdate();
     return true;
 }
@@ -79,8 +88,15 @@ float EnemyShip::getVisibleSizeHeight() const
 
 void EnemyShip::launch()
 {
-    const auto mainScene = getRunningScene<MainScene *>();
-    if (!mainScene)
+    const auto director = Director::getInstance();
+    if(!director)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(director);
+        return;
+    }
+
+    const auto mainScene = dynamic_cast<MainScene*>(director->getRunningScene()->getChildByName(MAIN_SCENE_NAME));
+    if(!mainScene)
     {
         std::cout << GENERATE_ERROR_MESSAGE(mainScene);
         return;
@@ -109,8 +125,15 @@ void EnemyShip::rotateToPlayerShipUpdate(float delta)
     if (!isLaunched) return;
     if(this->getPosition().y < 100) return;
 
-    const auto mainScene = getRunningScene<MainScene *>();
-    if (!mainScene)
+    const auto director = Director::getInstance();
+    if(!director)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(director);
+        return;
+    }
+
+    const auto mainScene = dynamic_cast<MainScene*>(director->getRunningScene()->getChildByName(MAIN_SCENE_NAME));
+    if(!mainScene)
     {
         std::cout << GENERATE_ERROR_MESSAGE(mainScene);
         return;
