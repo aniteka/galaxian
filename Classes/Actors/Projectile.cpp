@@ -103,7 +103,7 @@ bool Projectile::onContactBegin(PhysicsContact &contact)
             return false;
         }
 
-        ship->setVisible(false);
+        ship->setEnable(false);
 
         self->onHit(ship);
         self->removeFromParent();

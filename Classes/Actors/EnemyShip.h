@@ -24,6 +24,9 @@ public:
     float getVisibleSizeWidth() const;
     float getVisibleSizeHeight() const;
 
+    void setEnable(bool inIsEnable);
+    bool isEnable() const { return _isEnable; };
+
     EnemyType getEnemyType() const { return enemyType; }
 
     void launch();
@@ -36,6 +39,7 @@ protected:
 protected:
     EnemyType enemyType = EnemyType::Blue;
     bool isLaunched = false;
+    bool _isEnable = true;
 
 private:
     PlayerShip* playerShip;

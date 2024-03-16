@@ -86,6 +86,13 @@ float EnemyShip::getVisibleSizeHeight() const
     return this->getContentSize().height * this->getScaleY();
 }
 
+void EnemyShip::setEnable(bool inIsEnable)
+{
+    _isEnable = inIsEnable;
+    this->setVisible(isEnable());
+    this->getPhysicsBody()->setEnabled(isEnable());
+}
+
 void EnemyShip::launch()
 {
     const auto director = Director::getInstance();
@@ -109,9 +116,11 @@ void EnemyShip::launch()
         return;
     }
 
+    const float mul = random<int>(0, 1) ? 1.f : -1.f;
+
     ccBezierConfig bezierConfig;
-    bezierConfig.controlPoint_1 = Vec2(200, 100);
-    bezierConfig.controlPoint_2 = (playerShip->getPosition() - this->getPosition()) + Vec2(100, 400);
+    bezierConfig.controlPoint_1 = Vec2(200 * mul, 100);
+    bezierConfig.controlPoint_2 = (playerShip->getPosition() - this->getPosition()) + Vec2(100 * mul, 400);
     bezierConfig.endPosition = playerShip->getPosition() - this->getPosition() - Vec2(0, 100);
     auto bb = BezierBy::create(5, bezierConfig);
 

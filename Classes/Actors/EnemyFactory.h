@@ -17,6 +17,7 @@ public:
 
 protected:
     void moveUpdate(float interval);
+    void launchRandomShipUpdate(float interval);
 
     EnemyShip* spawnEnemyShip(EnemyType enemyType);
     void spawnEnemyRow(int count, const float y, EnemyType enemyType);
@@ -31,6 +32,10 @@ protected:
     float movingDownVal = 15.f;
 
     std::vector<EnemyShip*> enemyShips;
+
+private:
+    float nextInterval = 5.f;
+    float currentInterval = 0.f;
 };
 
 

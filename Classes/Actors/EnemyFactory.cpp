@@ -35,6 +35,7 @@ void EnemyFactory::update(float delta)
     Node::update(delta);
 
     moveUpdate(delta);
+    launchRandomShipUpdate(delta);
 }
 
 void EnemyFactory::moveUpdate(float interval)
@@ -49,9 +50,6 @@ void EnemyFactory::moveUpdate(float interval)
     if (getPositionX() >= (director->getVisibleSize().width / 2.f) + 64.f
         || getPositionX() <= (director->getVisibleSize().width / 2.f) - 64.f)
     {
-        const auto toLaunch = spawnCopyOfEnemy(enemyShips[0]);
-        toLaunch->launch();
-
         movingRight = !movingRight;
         if (movingRight)
             movingDirMul = 1.f;
@@ -61,6 +59,31 @@ void EnemyFactory::moveUpdate(float interval)
         this->setPositionY(this->getPositionY() - movingDownVal);
     }
     this->setPositionX(this->getPositionX() + movingSpeed * movingDirMul);
+}
+
+void EnemyFactory::launchRandomShipUpdate(float interval)
+{
+    currentInterval += interval;
+    if(currentInterval > nextInterval)
+    {
+        nextInterval = random<float>(2.f, 5.f);
+        currentInterval = 0.f;
+
+        decltype(enemyShips) enabledEnemyShips;
+        std::copy_if(enemyShips.begin(), enemyShips.end(), std::back_inserter(enabledEnemyShips),
+                     [](const EnemyShip* enemyShip)
+                     {
+                         return enemyShip->isEnable();
+                     });
+
+        if(enabledEnemyShips.empty())
+            return;
+
+        auto& ship = enabledEnemyShips[random<int>(0, enabledEnemyShips.size() - 1)];
+        auto toLaunch = this->spawnCopyOfEnemy(ship);
+        toLaunch->launch();
+        ship->setEnable(false);
+    }
 }
 
 EnemyShip* EnemyFactory::spawnEnemyShip(EnemyType enemyType)
