@@ -11,10 +11,14 @@ enum class EnemyType
 
 class EnemyShip : public cocos2d::Sprite
 {
+public:
     static EnemyShip* createEnemyShip(EnemyType inEnemyType);
 
     bool init() override;
     void update(float delta) override;
+
+    float getVisibleSizeWidth() const;
+    float getVisibleSizeHeight() const;
 
     CREATE_FUNC(EnemyShip);
 

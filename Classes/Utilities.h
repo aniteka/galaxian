@@ -13,7 +13,7 @@
 #define BODY_SPRITE             "DEV/DevA.png"
 #define PROJECTILE_SPRITE       "DEV/DevB.png"
 
-#define ENEMY_BLUE_SPRITE       "DEV/DevA.png"
+#define ENEMY_BLUE_SPRITE       "DEV/DevBlue.png"
 #define ENEMY_RED_SPRITE        "DEV/DevB.png"
 #define ENEMY_PURPLE_SPRITE     "NONE"  // TODO
 #define ENEMY_FLAGSHIP_SPRITE   "NONE2" // TODO

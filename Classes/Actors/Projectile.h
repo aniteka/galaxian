@@ -3,6 +3,8 @@
 
 #include <cocos2d.h>
 
+class MainScene;
+
 class Projectile : public cocos2d::Sprite
 {
 public:
@@ -27,6 +29,7 @@ protected:
 
 private:
     bool hasLaunched = false;
+    MainScene* mainScene = nullptr;
 };
 
 

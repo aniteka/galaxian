@@ -1,6 +1,7 @@
 #include <iostream>
 #include "MainScene.h"
 #include "Actors/PlayerShip.h"
+#include "Actors/EnemyFactory.h"
 #include "Utilities.h"
 
 USING_NS_CC;
@@ -49,6 +50,20 @@ bool MainScene::init()
     else
     {
         std::cout << GENERATE_ERROR_MESSAGE(playerShip);
+    }
+
+    enemyFactory = EnemyFactory::createEnemyFactory();
+    if(enemyFactory)
+    {
+        this->addChild(enemyFactory);
+
+        enemyFactory->setPosition(
+                director->getVisibleSize().width / 2.f,
+                director->getVisibleSize().height * 0.9f);
+    }
+    else
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(enemyFactory);
     }
 
     return true;

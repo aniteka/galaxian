@@ -43,5 +43,14 @@ void EnemyShip::update(float delta)
 {
     Node::update(delta);
 
+}
 
+float EnemyShip::getVisibleSizeWidth() const
+{
+    return this->getContentSize().width * this->getScaleX();
+}
+
+float EnemyShip::getVisibleSizeHeight() const
+{
+    return this->getContentSize().height * this->getScaleY();
 }
