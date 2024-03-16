@@ -4,9 +4,24 @@
 
 EnemyShip* EnemyShip::createEnemyShip(EnemyType inEnemyType)
 {
-    const auto ship = EnemyShip::create();
-    ship->enemyType = inEnemyType;
-    return ship;
+    auto pRet = new(std::nothrow)EnemyShip();
+    if(pRet)
+    {
+        pRet->enemyType = inEnemyType;
+    }
+
+    if (pRet && pRet->init())
+    {
+        pRet->autorelease();
+        return pRet;
+    }
+    else
+    {
+        delete pRet;
+        pRet = nullptr;
+        return nullptr;
+    }
+    return pRet;
 }
 
 bool EnemyShip::init()
@@ -17,11 +32,11 @@ bool EnemyShip::init()
     case EnemyType::Blue:
         enemyShipFile = ENEMY_BLUE_SPRITE;
         break;
-    case EnemyType::Red:
-        enemyShipFile = ENEMY_RED_SPRITE;
-        break;
     case EnemyType::Purple:
         enemyShipFile = ENEMY_PURPLE_SPRITE;
+        break;
+    case EnemyType::Red:
+        enemyShipFile = ENEMY_RED_SPRITE;
         break;
     case EnemyType::Flagship:
         enemyShipFile = ENEMY_FLAGSHIP_SPRITE;

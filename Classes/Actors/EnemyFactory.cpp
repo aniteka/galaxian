@@ -5,50 +5,31 @@
 
 USING_NS_CC;
 
-EnemyFactory* EnemyFactory::createEnemyFactory()
+EnemyFactory *EnemyFactory::createEnemyFactory()
 {
     return EnemyFactory::create();
 }
 
 bool EnemyFactory::init()
 {
-    if(!Node::init())
+    if (!Node::init())
     {
         return false;
     }
     const auto director = Director::getInstance();
-    if(!director)
+    if (!director)
     {
         std::cout << GENERATE_ERROR_MESSAGE(director);
         return false;
     }
 
-    for(int i = 0; i < 3; ++i)
+    for (int i = 0; i < 3; ++i)
     {
-        for(int j = 0; j < 10; ++j)
-        {
-            auto enemyShip = EnemyShip::createEnemyShip(EnemyType::Blue);
-            if(!enemyShip)
-            {
-                std::cout << GENERATE_ERROR_MESSAGE(enemyShip);
-                continue;
-            }
-            this->addChild(enemyShip);
-            enemyShips.push_back(enemyShip);
-
-            const auto x =
-                    ((director->getVisibleSize().width * 0.08f * (float)j)
-                    - (director->getVisibleSize().width / 2.f))
-                    + 85.f;
-            const auto y = -45.f * (float)i;
-
-            enemyShip->setPosition(x, y);
-
-            // TODO DEBUG ONLY
-            enemyShip->setScale(0.4f);
-            // TODO DEBUG ONLY
-        }
+        this->spawnEnemyRow(10, -45.f * (float)i, EnemyType::Blue);
     }
+
+    this->spawnEnemyRow(8, 45.f, EnemyType::Purple);
+    this->spawnEnemyRow(6, 45.f * 2.f, EnemyType::Red);
 
     this->scheduleUpdate();
     return true;
@@ -64,22 +45,71 @@ void EnemyFactory::update(float delta)
 void EnemyFactory::moveUpdate(float interval)
 {
     const auto director = Director::getInstance();
-    if(!director)
+    if (!director)
     {
         std::cout << GENERATE_ERROR_MESSAGE(director);
         return;
     }
 
-    if(getPositionX() >= (director->getVisibleSize().width / 2.f) + 62.5f
-        || getPositionX() <= (director->getVisibleSize().width / 2.f) - 62.5f)
+    if (getPositionX() >= (director->getVisibleSize().width / 2.f) + 64.f
+        || getPositionX() <= (director->getVisibleSize().width / 2.f) - 64.f)
     {
         movingRight = !movingRight;
-        if(movingRight)
+        if (movingRight)
             movingDirMul = 1.f;
-        else if(!movingRight)
+        else if (!movingRight)
             movingDirMul = -1.f;
 
         this->setPositionY(this->getPositionY() - movingDownVal);
     }
     this->setPositionX(this->getPositionX() + movingSpeed * movingDirMul);
+}
+
+EnemyShip* EnemyFactory::spawnEnemyShip(EnemyType enemyType)
+{
+    auto enemyShip = EnemyShip::createEnemyShip(enemyType);
+    if (!enemyShip)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(enemyShip);
+        return nullptr;
+    }
+    this->addChild(enemyShip);
+    enemyShips.push_back(enemyShip);
+
+    // TODO DEBUG ONLY
+    enemyShip->setScale(0.4f);
+    // TODO DEBUG ONLY
+
+    return enemyShip;
+}
+
+void EnemyFactory::spawnEnemyRow(int count, const float y, EnemyType enemyType)
+{
+    const auto director = Director::getInstance();
+    if (!director)
+    {
+        std::cout << GENERATE_ERROR_MESSAGE(director);
+        return;
+    }
+
+    for (int j = 0; j < count; ++j)
+    {
+        const auto ship = this->spawnEnemyShip(enemyType);
+        if(!ship)
+        {
+            std::cout << GENERATE_ERROR_MESSAGE(ship);
+            continue;
+        }
+
+        const auto wWidth = director->getVisibleSize().width;
+        const auto offset = wWidth * 0.08f;
+        const auto shipWidth = ship->getVisibleSizeWidth();
+
+        const auto x =
+                ((offset * (float)j)
+                 - (wWidth / 2.f))
+                + ((wWidth - ( shipWidth*(float)count + (offset - shipWidth)*((float)(count - 1)) ) ) / 2.f + shipWidth / 2.f);
+
+        ship->setPosition(x, y);
+    }
 }

@@ -45,7 +45,7 @@ bool MainScene::init()
 
         playerShip->setPosition(
                 director->getVisibleSize().width / 2.f,
-                director->getVisibleSize().height * 0.1f);
+                director->getVisibleSize().height * 0.08f);
     }
     else
     {
@@ -59,7 +59,7 @@ bool MainScene::init()
 
         enemyFactory->setPosition(
                 director->getVisibleSize().width / 2.f,
-                director->getVisibleSize().height * 0.9f);
+                director->getVisibleSize().height * 0.85f);
     }
     else
     {

@@ -20,8 +20,6 @@ public:
     float getVisibleSizeWidth() const;
     float getVisibleSizeHeight() const;
 
-    CREATE_FUNC(EnemyShip);
-
 protected:
     EnemyType enemyType = EnemyType::Blue;
 };

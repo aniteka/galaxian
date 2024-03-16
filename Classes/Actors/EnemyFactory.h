@@ -2,8 +2,7 @@
 #define GALAXIAN_ENEMYFACTORY_H
 
 #include "cocos2d.h"
-
-class EnemyShip;
+#include "EnemyShip.h"
 
 class EnemyFactory : public cocos2d::Node
 {
@@ -20,6 +19,9 @@ public:
 
 protected:
     void moveUpdate(float interval);
+
+    EnemyShip* spawnEnemyShip(EnemyType enemyType);
+    void spawnEnemyRow(int count, const float y, EnemyType enemyType);
 
 protected:
     const std::string moveUpdateKey = "moveUpdate";
