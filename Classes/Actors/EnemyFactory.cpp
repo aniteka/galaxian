@@ -15,7 +15,7 @@ bool EnemyFactory::init()
     const auto director = Director::getInstance();
     if (!director)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(director);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
         return false;
     }
 
@@ -43,7 +43,7 @@ void EnemyFactory::moveUpdate(float interval)
     const auto director = Director::getInstance();
     if (!director)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(director);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
         return;
     }
 
@@ -91,7 +91,7 @@ EnemyShip* EnemyFactory::spawnEnemyShip(EnemyType enemyType)
     const auto enemyShip = EnemyShip::createEnemyShip(enemyType);
     if (!enemyShip)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(enemyShip);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(enemyShip));
         return nullptr;
     }
     this->addChild(enemyShip);
@@ -109,7 +109,7 @@ void EnemyFactory::spawnEnemyRow(int count, const float y, EnemyType enemyType)
     const auto director = Director::getInstance();
     if (!director)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(director);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
         return;
     }
 
@@ -118,7 +118,7 @@ void EnemyFactory::spawnEnemyRow(int count, const float y, EnemyType enemyType)
         const auto ship = this->spawnEnemyShip(enemyType);
         if(!ship)
         {
-            std::cout << GENERATE_ERROR_MESSAGE(ship);
+            CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(ship));
             continue;
         }
 
@@ -140,21 +140,21 @@ EnemyShip* EnemyFactory::spawnCopyOfEnemy(EnemyShip *toCopy) const
     const auto director = Director::getInstance();
     if(!director)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(director);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
         return nullptr;
     }
 
     const auto mainScene = dynamic_cast<MainScene*>(director->getRunningScene()->getChildByName(MAIN_SCENE_NAME));
     if(!mainScene)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(mainScene);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(mainScene));
         return nullptr;
     }
 
     const auto enemyShip = EnemyShip::createEnemyShip(toCopy->getEnemyType());
     if (!enemyShip)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(enemyShip);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(enemyShip));
         return nullptr;
     }
     mainScene->addChild(enemyShip);

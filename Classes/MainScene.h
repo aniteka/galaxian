@@ -21,6 +21,13 @@ public:
     CREATE_FUNC(MainScene);
 
 protected:
+    void setupMainMenu();
+    void setupGameplay();
+
+protected:
+    cocos2d::Layer* mainMenu;
+    cocos2d::Layer* gameplayLayer;
+
     EnemyFactory* enemyFactory;
     PlayerShip* playerShip;
 };

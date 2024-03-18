@@ -17,11 +17,6 @@ public:
     virtual void applicationDidEnterBackground();
 
     virtual void applicationWillEnterForeground();
-
-private:
-#ifndef NDEBUG
-    std::ofstream coutFile;
-#endif
 };
 
 #endif // _APP_DELEGATE_H_

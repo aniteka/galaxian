@@ -42,14 +42,6 @@ static int register_all_packages()
 
 bool AppDelegate::applicationDidFinishLaunching()
 {
-#ifndef NDEBUG
-    /*
-     * Reopen the cout stream to output to a file
-     */
-    coutFile.open("log.txt");
-    std::cout.rdbuf(coutFile.rdbuf());
-#endif
-
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if (!glview)

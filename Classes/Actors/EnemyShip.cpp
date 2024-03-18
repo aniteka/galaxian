@@ -48,7 +48,7 @@ bool EnemyShip::init()
             break;
         case EnemyType::None:
         default:
-            std::cout << GENERATE_ERROR_MESSAGE(enemyType);
+            CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(enemyType));
             return false;
     }
 
@@ -108,21 +108,21 @@ void EnemyShip::launch()
     const auto director = Director::getInstance();
     if(!director)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(director);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
         return;
     }
 
     const auto mainScene = dynamic_cast<MainScene*>(director->getRunningScene()->getChildByName(MAIN_SCENE_NAME));
     if(!mainScene)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(mainScene);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(mainScene));
         return;
     }
 
     playerShip = playerShip ? playerShip : mainScene->getPlayerShip();
     if (!playerShip)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(playerShip);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(playerShip));
         return;
     }
 
@@ -144,21 +144,21 @@ void EnemyShip::rotateToPlayerShipUpdate(float delta)
     const auto director = Director::getInstance();
     if(!director)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(director);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
         return;
     }
 
     const auto mainScene = dynamic_cast<MainScene*>(director->getRunningScene()->getChildByName(MAIN_SCENE_NAME));
     if(!mainScene)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(mainScene);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(mainScene));
         return;
     }
 
     playerShip = playerShip ? playerShip : mainScene->getPlayerShip();
     if (!playerShip)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(playerShip);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(playerShip));
         return;
     }
 
@@ -173,21 +173,21 @@ void EnemyShip::shootingUpdate(float delta)
         const auto director = Director::getInstance();
         if (!director)
         {
-            std::cout << GENERATE_ERROR_MESSAGE(director);
+            CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
             return;
         }
 
         const auto mainScene = dynamic_cast<MainScene *>(director->getRunningScene()->getChildByName(MAIN_SCENE_NAME));
         if (!mainScene)
         {
-            std::cout << GENERATE_ERROR_MESSAGE(mainScene);
+            CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(mainScene));
             return;
         }
 
         playerShip = playerShip ? playerShip : mainScene->getPlayerShip();
         if (!playerShip)
         {
-            std::cout << GENERATE_ERROR_MESSAGE(playerShip);
+            CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(playerShip));
             return;
         }
 

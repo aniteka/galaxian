@@ -58,7 +58,7 @@ void PlayerShip::setupBody()
     body = Sprite::create(BODY_SPRITE);
     if (!body)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(body);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(body));
         return;
     }
     addChild(body);
@@ -90,7 +90,7 @@ void PlayerShip::setupProjectileView()
     }
     else
     {
-        std::cout << GENERATE_ERROR_MESSAGE(projectileView);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(projectileView));
     }
 }
 
@@ -99,7 +99,7 @@ void PlayerShip::setupKeyboard()
     keyboardListener = EventListenerKeyboard::create();
     if (!keyboardListener)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(keyboardListener);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(keyboardListener));
         return;
     }
 
@@ -114,7 +114,7 @@ void PlayerShip::movingUpdate()
     const auto director = Director::getInstance();
     if (!director)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(director);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
         return;
     }
 
@@ -147,13 +147,13 @@ void PlayerShip::shoot()
     const auto director = Director::getInstance();
     if(!director)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(director);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
         return;
     }
     const auto scene = director->getRunningScene();
     if(!scene)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(scene);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(scene));
         return;
     }
 
@@ -173,7 +173,7 @@ void PlayerShip::shoot()
     }
     else
     {
-        std::cout << GENERATE_ERROR_MESSAGE(projectileReal);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(projectileReal));
     }
 
     if(projectileView)

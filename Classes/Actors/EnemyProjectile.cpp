@@ -62,12 +62,12 @@ bool EnemyProjectile::onContactBegin(PhysicsContact &contact)
         const auto ship = dynamic_cast<PlayerShip*>(nodeA->getTag() == PLAYER_SHIP_TAG ? nodeA : nodeB);
         if(!self || !ship)
         {
-            std::cout << GENERATE_ERROR_MESSAGE(!self || !ship);
+            CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(!self || !ship));
             return false;
         }
 
         // TODO DAMAGE
-        std::cout << "WOrk\n";
+        CCLOG("%s", "WOrk");
 
         self->removeFromParent();
     }

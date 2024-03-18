@@ -72,7 +72,7 @@ void Projectile::collisionUpdate(float delta)
     const auto director = Director::getInstance();
     if(!director)
     {
-        std::cout << GENERATE_ERROR_MESSAGE(director);
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
         return;
     }
 
@@ -99,7 +99,7 @@ bool Projectile::onContactBegin(PhysicsContact &contact)
         const auto ship = dynamic_cast<EnemyShip*>(nodeA->getTag() == ENEMY_SHIP_TAG ? nodeA : nodeB);
         if(!self || !ship)
         {
-            std::cout << GENERATE_ERROR_MESSAGE(!self || !ship);
+            CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(!self || !ship));
             return false;
         }
 
