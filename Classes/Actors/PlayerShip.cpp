@@ -12,9 +12,13 @@ bool PlayerShip::init()
         return false;
     }
 
+    this->setTag(PLAYER_SHIP_TAG);
+
     setupKeyboard();
 
     setupBody();
+
+    setupPhysicsBody();
 
     setupProjectileView();
 
@@ -40,6 +44,15 @@ float PlayerShip::getVisibleBodySizeHeight() const
     return body->getContentSize().height * body->getScaleY();
 }
 
+void PlayerShip::receiveDamage()
+{
+    hp -= 1;
+    if(hp == 0)
+    {
+        // TODO GAME OVER
+    }
+}
+
 void PlayerShip::setupBody()
 {
     body = Sprite::create(BODY_SPRITE);
@@ -51,6 +64,16 @@ void PlayerShip::setupBody()
     addChild(body);
 
     body->setScale(0.1);
+}
+
+void PlayerShip::setupPhysicsBody()
+{
+    const auto physicsBody = PhysicsBody::createBox(Size(
+            body->getContentSize().width * body->getScaleX(),
+            body->getContentSize().height * body->getScaleY()));
+    physicsBody->setDynamic(false);
+    physicsBody->setContactTestBitmask(0xFFFFFFFF);
+    this->setPhysicsBody(physicsBody);
 }
 
 void PlayerShip::setupProjectileView()
@@ -196,3 +219,4 @@ void PlayerShip::onKeyReleasedCallback(cocos2d::EventKeyboard::KeyCode keyCode, 
             break;
     }
 }
+

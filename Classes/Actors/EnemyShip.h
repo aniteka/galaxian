@@ -33,6 +33,7 @@ public:
 
 protected:
     void rotateToPlayerShipUpdate(float delta);
+    void shootingUpdate(float delta);
 
     void rotateToPoint(cocos2d::Point point);
 
@@ -40,6 +41,9 @@ protected:
     EnemyType enemyType = EnemyType::Blue;
     bool isLaunched = false;
     bool _isEnable = true;
+
+    float shootingTimeout = 1.5f;
+    float currentShootingTimeout = 0.f;
 
 private:
     PlayerShip* playerShip;

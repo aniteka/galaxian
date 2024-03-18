@@ -3,6 +3,7 @@
 #include "Utilities.h"
 #include "MainScene.h"
 #include "Actors/PlayerShip.h"
+#include "EnemyProjectile.h"
 
 USING_NS_CC;
 
@@ -73,7 +74,11 @@ void EnemyShip::update(float delta)
 {
     Node::update(delta);
 
-    rotateToPlayerShipUpdate(delta);
+    if (isLaunched && this->getPosition().y > 100)
+    {
+        rotateToPlayerShipUpdate(delta);
+        shootingUpdate(delta);
+    }
 }
 
 float EnemyShip::getVisibleSizeWidth() const
@@ -91,6 +96,11 @@ void EnemyShip::setEnable(bool inIsEnable)
     _isEnable = inIsEnable;
     this->setVisible(isEnable());
     this->getPhysicsBody()->setEnabled(isEnable());
+
+    if(isLaunched)
+    {
+        this->removeFromParent();
+    }
 }
 
 void EnemyShip::launch()
@@ -131,9 +141,6 @@ void EnemyShip::launch()
 
 void EnemyShip::rotateToPlayerShipUpdate(float delta)
 {
-    if (!isLaunched) return;
-    if(this->getPosition().y < 100) return;
-
     const auto director = Director::getInstance();
     if(!director)
     {
@@ -156,6 +163,46 @@ void EnemyShip::rotateToPlayerShipUpdate(float delta)
     }
 
     rotateToPoint(playerShip->getPosition());
+}
+
+void EnemyShip::shootingUpdate(float delta)
+{
+    if(currentShootingTimeout > shootingTimeout)
+    {
+        currentShootingTimeout = 0.f;
+        const auto director = Director::getInstance();
+        if (!director)
+        {
+            std::cout << GENERATE_ERROR_MESSAGE(director);
+            return;
+        }
+
+        const auto mainScene = dynamic_cast<MainScene *>(director->getRunningScene()->getChildByName(MAIN_SCENE_NAME));
+        if (!mainScene)
+        {
+            std::cout << GENERATE_ERROR_MESSAGE(mainScene);
+            return;
+        }
+
+        playerShip = playerShip ? playerShip : mainScene->getPlayerShip();
+        if (!playerShip)
+        {
+            std::cout << GENERATE_ERROR_MESSAGE(playerShip);
+            return;
+        }
+
+        const auto enemyProjectile = EnemyProjectile::create();
+        if(enemyProjectile)
+        {
+            mainScene->addChild(enemyProjectile);
+
+            enemyProjectile->setPosition(this->getPosition());
+            enemyProjectile->setRotation(this->getRotation());
+
+            enemyProjectile->launch(playerShip->getPosition());
+        }
+    }
+    currentShootingTimeout += delta;
 }
 
 void EnemyShip::rotateToPoint(cocos2d::Point point)
@@ -186,3 +233,4 @@ void EnemyShip::rotateToPoint(cocos2d::Point point)
 
     this->setRotation(rotation);
 }
+

@@ -6,6 +6,8 @@
 
 class Projectile;
 
+#define PLAYER_SHIP_TAG 4
+
 class PlayerShip : public cocos2d::Sprite
 {
 public:
@@ -15,10 +17,15 @@ public:
     float getVisibleBodySizeWidth() const;
     float getVisibleBodySizeHeight() const;
 
+    void receiveDamage();
+
+    int getHp() const { return hp; }
+
     CREATE_FUNC(PlayerShip);
 
 protected:
     void setupBody();
+    void setupPhysicsBody();
     void setupProjectileView();
     void setupKeyboard();
 
@@ -41,6 +48,8 @@ protected:
 
     bool movingLeftState = false;
     bool movingRightState = false;
+
+    int hp = 3;
 };
 
 
