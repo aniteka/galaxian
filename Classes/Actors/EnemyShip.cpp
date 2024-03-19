@@ -36,15 +36,19 @@ bool EnemyShip::init()
     {
         case EnemyType::Blue:
             enemyShipFile = ENEMY_BLUE_SPRITE;
+            givenExp = 100.f;
             break;
         case EnemyType::Purple:
             enemyShipFile = ENEMY_PURPLE_SPRITE;
+            givenExp = 200.f;
             break;
         case EnemyType::Red:
             enemyShipFile = ENEMY_RED_SPRITE;
+            givenExp = 300.f;
             break;
         case EnemyType::Flagship:
             enemyShipFile = ENEMY_FLAGSHIP_SPRITE;
+            givenExp = 500.f;
             break;
         case EnemyType::None:
         default:

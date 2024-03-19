@@ -34,28 +34,30 @@ void MainScene::setupMainMenu()
     mainMenu = Layer::create();
     this->addChild(mainMenu, 1);
 
-    const auto button = ui::Button::create(START_BUTTON_SPRITE,START_BUTTON_SPRITE,START_BUTTON_SPRITE);
-    button->setPosition(Vec2(300, 300));
-    button->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
-        switch (type)
+    const auto buttonStart = ui::Button::create(START_BUTTON_SPRITE,START_BUTTON_SPRITE,START_BUTTON_SPRITE);
+    buttonStart->setPosition(Vec2(300, 340));
+    buttonStart->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
+        if(type == ui::Widget::TouchEventType::ENDED)
         {
-            case ui::Widget::TouchEventType::BEGAN:
-                CCLOG("touch began");
-                break;
-            case ui::Widget::TouchEventType::MOVED:
-                CCLOG("touch moved");
-                break;
-            case ui::Widget::TouchEventType::ENDED:
-                CCLOG("touch ended");
-                break;
-            case ui::Widget::TouchEventType::CANCELED:
-                CCLOG("touch canceled");
-                break;
-            default:
-                break;
+            setupGameplay();
+            releaseMainMenu();
         }
     });
-    mainMenu->addChild(button);
+    mainMenu->addChild(buttonStart);
+
+    const auto buttonExit = ui::Button::create(EXIT_BUTTON_SPRITE,EXIT_BUTTON_SPRITE,EXIT_BUTTON_SPRITE);
+    buttonExit->setPosition(Vec2(300, 260));
+    buttonExit->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
+        if(type == ui::Widget::TouchEventType::ENDED)
+        {
+            const auto director = Director::getInstance();
+            if(director)
+            {
+                director->end();
+            }
+        }
+    });
+    mainMenu->addChild(buttonExit);
 }
 
 void MainScene::setupGameplay()
@@ -110,5 +112,19 @@ void MainScene::setupGameplay()
     {
         CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(enemyFactory));
     }
+}
+
+void MainScene::releaseMainMenu()
+{
+    mainMenu->removeFromParent();
+    mainMenu = nullptr;
+}
+
+void MainScene::releaseGameplay()
+{
+    gameplayLayer->removeFromParent();
+    gameplayLayer = nullptr;
+    enemyFactory = nullptr;
+    playerShip = nullptr;
 }
 

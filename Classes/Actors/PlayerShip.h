@@ -50,6 +50,7 @@ protected:
     bool movingRightState = false;
 
     int hp = 3;
+    float currentExp = 0.f;
 };
 
 

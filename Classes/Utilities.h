@@ -22,6 +22,6 @@
 #define BASE_FONT               "fonts/arial.ttf"
 
 #define START_BUTTON_SPRITE     "DEV/DevButton.png"
-#define EXIT_BUTTON_SPRITE      "DEV/DevExit.png"
+#define EXIT_BUTTON_SPRITE      "DEV/DevButton.png"
 
 #endif //GALAXIAN_UTILITIES_H

@@ -28,6 +28,7 @@ public:
     bool isEnable() const { return _isEnable; };
 
     EnemyType getEnemyType() const { return enemyType; }
+    float getExp() const { return givenExp; }
 
     void launch();
 
@@ -44,6 +45,8 @@ protected:
 
     float shootingTimeout = 1.5f;
     float currentShootingTimeout = 0.f;
+
+    float givenExp = 0.f;
 
 private:
     PlayerShip* playerShip;

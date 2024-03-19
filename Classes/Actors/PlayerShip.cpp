@@ -2,6 +2,7 @@
 #include "PlayerShip.h"
 #include "Projectile.h"
 #include "Utilities.h"
+#include "EnemyShip.h"
 
 USING_NS_CC;
 
@@ -186,6 +187,11 @@ void PlayerShip::onProjectileHit(cocos2d::Sprite* hitSprite)
 {
     projectileReal = nullptr;
     projectileView->setVisible(true);
+
+    if(const auto ship = dynamic_cast<EnemyShip*>(hitSprite))
+    {
+        currentExp += ship->getExp();
+    }
 }
 
 void PlayerShip::onKeyPressedCallback(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event *event)

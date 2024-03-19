@@ -24,10 +24,19 @@ protected:
     void setupMainMenu();
     void setupGameplay();
 
-protected:
-    cocos2d::Layer* mainMenu;
-    cocos2d::Layer* gameplayLayer;
+    void releaseMainMenu();
+    void releaseGameplay();
 
+protected:
+    /*
+     * MainMenu
+     */
+    cocos2d::Layer* mainMenu;
+
+    /*
+     * Gameplay
+     */
+    cocos2d::Layer* gameplayLayer;
     EnemyFactory* enemyFactory;
     PlayerShip* playerShip;
 };
