@@ -11,13 +11,15 @@
 #define GENERATE_ERROR_MESSAGE(ERROR_CAUSER) \
     (ERROR_CAUSER, "Error: " __FILE__ "(" TO_STR_COV(__LINE__) ")" ": " #ERROR_CAUSER)
 
-#define BODY_SPRITE             "DEV/DevA.png"
-#define PROJECTILE_SPRITE       "DEV/DevB.png"
+#define BODY_SPRITE             "PlayerShip.png"
+#define PROJECTILE_SPRITE       "Projectile.png"
 
-#define ENEMY_BLUE_SPRITE       "DEV/DevBlue.png"
-#define ENEMY_PURPLE_SPRITE     "DEV/DevPurple.png"
-#define ENEMY_RED_SPRITE        "DEV/DevRed.png"
-#define ENEMY_FLAGSHIP_SPRITE   "DEV/DevFlagship.png"
+#define ENEMY_BLUE_SPRITE       "Enemies/Blue/Idle%i.png"
+#define ENEMY_BLUE_COUNT        2
+
+#define ENEMY_PURPLE_SPRITE     "Enemies/Blue/Idle1.png"
+#define ENEMY_RED_SPRITE        "Enemies/Blue/Idle1.png"
+#define ENEMY_FLAGSHIP_SPRITE   "Enemies/Blue/Idle1.png"
 
 #define START_BUTTON_SPRITE     "DEV/DevButton.png"
 #define EXIT_BUTTON_SPRITE      "DEV/DevButton.png"

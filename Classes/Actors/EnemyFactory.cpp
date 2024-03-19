@@ -26,7 +26,7 @@ bool EnemyFactory::init()
     this->spawnEnemyRow(8, 45.f, EnemyType::Purple);
     this->spawnEnemyRow(6, 45.f * 2.f, EnemyType::Red);
 
-    const auto offset = director->getVisibleSize().width * 0.08f;
+    const auto offset = director->getVisibleSize().width * offsetMul;
     const auto flagship1 = this->spawnEnemyShip(EnemyType::Flagship);
     if(flagship1)
     {
@@ -62,8 +62,8 @@ void EnemyFactory::moveUpdate(float interval)
         return;
     }
 
-    if (getPositionX() >= (director->getVisibleSize().width / 2.f) + 64.f
-        || getPositionX() <= (director->getVisibleSize().width / 2.f) - 64.f)
+    if (getPositionX() >= (director->getVisibleSize().width / 2.f) + 36.f
+        || getPositionX() <= (director->getVisibleSize().width / 2.f) - 36.f)
     {
         movingRight = !movingRight;
         if (movingRight)
@@ -132,10 +132,6 @@ EnemyShip* EnemyFactory::spawnEnemyShip(EnemyType enemyType)
     this->addChild(enemyShip);
     enemyShips.push_back(enemyShip);
 
-    // TODO DEBUG ONLY
-    enemyShip->setScale(0.4f);
-    // TODO DEBUG ONLY
-
     return enemyShip;
 }
 
@@ -158,7 +154,7 @@ void EnemyFactory::spawnEnemyRow(int count, const float y, EnemyType enemyType)
         }
 
         const auto wWidth = director->getVisibleSize().width;
-        const auto offset = wWidth * 0.08f;
+        const auto offset = wWidth * offsetMul;
         const auto shipWidth = ship->getVisibleSizeWidth();
 
         const auto x =
@@ -195,10 +191,6 @@ EnemyShip* EnemyFactory::spawnCopyOfEnemy(EnemyShip *toCopy) const
     mainScene->getGameplayLayer()->addChild(enemyShip);
 
     enemyShip->setPosition(this->convertToWorldSpace(toCopy->getPosition()));
-
-    // TODO DEBUG ONLY
-    enemyShip->setScale(0.4f);
-    // TODO DEBUG ONLY
 
     return enemyShip;
 }

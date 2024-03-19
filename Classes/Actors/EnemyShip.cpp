@@ -31,23 +31,34 @@ EnemyShip* EnemyShip::createEnemyShip(EnemyType inEnemyType)
 
 bool EnemyShip::init()
 {
-    const char* enemyShipFile;
+    std::string sprite;
+    const auto idleAnim = Animation::create();
+    idleAnim->setDelayPerUnit(0.5f);
+    idleAnim->setLoops(-1);
     switch (enemyType)
     {
         case EnemyType::Blue:
-            enemyShipFile = ENEMY_BLUE_SPRITE;
+            sprite = StringUtils::format(ENEMY_BLUE_SPRITE, 1);
+            for(int i = 1; i <= ENEMY_BLUE_COUNT; ++i)
+                idleAnim->addSpriteFrameWithFile( StringUtils::format(ENEMY_BLUE_SPRITE, i) );
             givenScore = 100.f;
             break;
         case EnemyType::Purple:
-            enemyShipFile = ENEMY_PURPLE_SPRITE;
+            sprite = StringUtils::format(ENEMY_BLUE_SPRITE, 1);
+            for(int i = 1; i <= ENEMY_BLUE_COUNT; ++i)
+                idleAnim->addSpriteFrameWithFile( StringUtils::format(ENEMY_BLUE_SPRITE, i) );
             givenScore = 200.f;
             break;
         case EnemyType::Red:
-            enemyShipFile = ENEMY_RED_SPRITE;
+            sprite = StringUtils::format(ENEMY_BLUE_SPRITE, 1);
+            for(int i = 1; i <= ENEMY_BLUE_COUNT; ++i)
+                idleAnim->addSpriteFrameWithFile( StringUtils::format(ENEMY_BLUE_SPRITE, i) );
             givenScore = 300.f;
             break;
         case EnemyType::Flagship:
-            enemyShipFile = ENEMY_FLAGSHIP_SPRITE;
+            sprite = StringUtils::format(ENEMY_BLUE_SPRITE, 1);
+            for(int i = 1; i <= ENEMY_BLUE_COUNT; ++i)
+                idleAnim->addSpriteFrameWithFile( StringUtils::format(ENEMY_BLUE_SPRITE, i) );
             givenScore = 500.f;
             break;
         case EnemyType::None:
@@ -56,16 +67,18 @@ bool EnemyShip::init()
             return false;
     }
 
-    if (!Sprite::initWithFile(enemyShipFile))
+    if (!Sprite::initWithFile(sprite))
     {
         return false;
     }
 
+    this->runAction(Animate::create(idleAnim));
+
     this->setTag(ENEMY_SHIP_TAG);
 
-    const auto physicsBody = PhysicsBody::createBox(Size(
-            this->getVisibleSizeWidth(),
-            this->getVisibleSizeHeight()));
+    this->setScale(3.125f);
+
+    const auto physicsBody = PhysicsBody::createBox(this->getContentSize());
     physicsBody->setDynamic(false);
     physicsBody->setContactTestBitmask(0xFFFFFFFF);
     this->setPhysicsBody(physicsBody);

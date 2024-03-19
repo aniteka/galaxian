@@ -16,16 +16,11 @@ bool Projectile::init()
 
     this->setTag(PROJECTILE_TAG);
 
-    // TODO DEBUG ONLY
-    this->setScaleX(0.1);
-    this->setScaleY(0.3);
-    // TODO DEBUG ONLY
+    this->setScale(3.125f);
 
     this->setAnchorPoint(Vec2(0.5, 0));
 
-    const auto physicsBody = PhysicsBody::createBox(Size(
-            this->getVisibleSizeWidth() * 10,
-            this->getVisibleSizeHeight() * 3));
+    const auto physicsBody = PhysicsBody::createBox(this->getContentSize());
     physicsBody->setDynamic(false);
     physicsBody->setContactTestBitmask(0xFFFFFFFF);
     physicsBody->setEnabled(false);

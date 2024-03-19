@@ -14,16 +14,11 @@ bool EnemyProjectile::init()
 
     this->setTag(ENEMY_PROJECTILE_TAG);
 
-    // TODO DEBUG ONLY
-    this->setScaleX(0.1);
-    this->setScaleY(0.3);
-    // TODO DEBUG ONLY
+    this->setScale(3.125f);
 
     this->setAnchorPoint(Vec2(0.5, 0));
 
-    const auto physicsBody = PhysicsBody::createBox(Size(
-            this->getContentSize().width,
-            this->getContentSize().height));
+    const auto physicsBody = PhysicsBody::createBox(this->getContentSize());
     physicsBody->setDynamic(false);
     physicsBody->setContactTestBitmask(0xFFFFFFFF);
     this->setPhysicsBody(physicsBody);

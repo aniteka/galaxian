@@ -31,6 +31,8 @@ protected:
     float movingSpeed = 0.3f;
     float movingDownVal = 15.f;
 
+    float offsetMul = 0.09f;
+
     std::vector<EnemyShip*> enemyShips;
 
 private:

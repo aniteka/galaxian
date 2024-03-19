@@ -84,7 +84,7 @@ void PlayerShip::setupBody()
     }
     addChild(body);
 
-    body->setScale(0.1);
+    body->setScale(3.125f);
 }
 
 void PlayerShip::setupPhysicsBody()
