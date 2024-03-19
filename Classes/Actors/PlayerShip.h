@@ -20,6 +20,7 @@ public:
     void receiveDamage();
 
     int getHp() const { return hp; }
+    float getScore() const { return score; }
 
     CREATE_FUNC(PlayerShip);
 
@@ -50,7 +51,7 @@ protected:
     bool movingRightState = false;
 
     int hp = 3;
-    float currentExp = 0.f;
+    float score = 0.f;
 };
 
 

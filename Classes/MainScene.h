@@ -18,27 +18,36 @@ public:
     EnemyFactory* getEnemyFactory() { return enemyFactory; }
     PlayerShip* getPlayerShip() { return playerShip; }
 
-    CREATE_FUNC(MainScene);
+    void updateGameplayMenu();
 
-protected:
     void setupMainMenu();
     void setupGameplay();
 
     void releaseMainMenu();
     void releaseGameplay();
 
+    cocos2d::Layer* getMainMenuLayer() const { return mainMenu; };
+    cocos2d::Layer* getGameplayLayer() const { return gameplayLayer; };
+
+    CREATE_FUNC(MainScene);
+
 protected:
     /*
      * MainMenu
      */
-    cocos2d::Layer* mainMenu;
+    cocos2d::Layer* mainMenu = nullptr;
 
     /*
      * Gameplay
      */
-    cocos2d::Layer* gameplayLayer;
-    EnemyFactory* enemyFactory;
-    PlayerShip* playerShip;
+    cocos2d::Layer* gameplayLayer = nullptr;
+    EnemyFactory* enemyFactory = nullptr;
+    PlayerShip* playerShip = nullptr;
+
+    cocos2d::Label* scoreLabel = nullptr;
+    cocos2d::Label* hpLabel = nullptr;
+
+    float maxScore = 0.f;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

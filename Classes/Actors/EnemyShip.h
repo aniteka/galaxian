@@ -28,11 +28,13 @@ public:
     bool isEnable() const { return _isEnable; };
 
     EnemyType getEnemyType() const { return enemyType; }
-    float getExp() const { return givenExp; }
+    float getScore() const { return givenScore; }
 
     void launch();
 
 protected:
+    bool onContactBegin(cocos2d::PhysicsContact& contact);
+
     void rotateToPlayerShipUpdate(float delta);
     void shootingUpdate(float delta);
 
@@ -46,10 +48,7 @@ protected:
     float shootingTimeout = 1.5f;
     float currentShootingTimeout = 0.f;
 
-    float givenExp = 0.f;
-
-private:
-    PlayerShip* playerShip;
+    float givenScore = 0.f;
 };
 
 

@@ -157,7 +157,7 @@ EnemyShip* EnemyFactory::spawnCopyOfEnemy(EnemyShip *toCopy) const
         CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(enemyShip));
         return nullptr;
     }
-    mainScene->addChild(enemyShip);
+    mainScene->getGameplayLayer()->addChild(enemyShip);
 
     enemyShip->setPosition(this->convertToWorldSpace(toCopy->getPosition()));
 

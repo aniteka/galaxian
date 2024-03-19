@@ -3,6 +3,7 @@
 #include "Projectile.h"
 #include "Utilities.h"
 #include "EnemyShip.h"
+#include "MainScene.h"
 
 USING_NS_CC;
 
@@ -47,10 +48,27 @@ float PlayerShip::getVisibleBodySizeHeight() const
 
 void PlayerShip::receiveDamage()
 {
-    hp -= 1;
-    if(hp == 0)
+    const auto director = Director::getInstance();
+    if(!director)
     {
-        // TODO GAME OVER
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
+        return;
+    }
+    const auto mainScene = dynamic_cast<MainScene*>(director->getRunningScene()->getChildByName(MAIN_SCENE_NAME));
+    if(!mainScene)
+    {
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(mainScene));
+        return;
+    }
+
+    hp -= 1;
+
+    mainScene->updateGameplayMenu();
+
+    if(hp <= 0)
+    {
+        mainScene->releaseGameplay();
+        mainScene->setupMainMenu();
     }
 }
 
@@ -151,7 +169,7 @@ void PlayerShip::shoot()
         CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
         return;
     }
-    const auto scene = director->getRunningScene();
+    const auto scene = dynamic_cast<MainScene*>(director->getRunningScene()->getChildByName(MAIN_SCENE_NAME));
     if(!scene)
     {
         CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(scene));
@@ -161,7 +179,7 @@ void PlayerShip::shoot()
     projectileReal = Projectile::create();
     if(projectileReal)
     {
-        scene->addChild(projectileReal);
+        scene->getGameplayLayer()->addChild(projectileReal);
 
         auto pos = this->getPosition();
         pos.y += getVisibleBodySizeHeight() / 2.f;
@@ -190,7 +208,21 @@ void PlayerShip::onProjectileHit(cocos2d::Sprite* hitSprite)
 
     if(const auto ship = dynamic_cast<EnemyShip*>(hitSprite))
     {
-        currentExp += ship->getExp();
+        score += ship->getScore();
+
+        const auto director = Director::getInstance();
+        if(!director)
+        {
+            CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
+            return;
+        }
+        const auto mainScene = dynamic_cast<MainScene*>(director->getRunningScene()->getChildByName(MAIN_SCENE_NAME));
+        if(!mainScene)
+        {
+            CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(mainScene));
+            return;
+        }
+        mainScene->updateGameplayMenu();
     }
 }
 

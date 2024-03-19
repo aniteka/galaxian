@@ -66,10 +66,9 @@ bool EnemyProjectile::onContactBegin(PhysicsContact &contact)
             return false;
         }
 
-        // TODO DAMAGE
-        CCLOG("%s", "WOrk");
-
         self->removeFromParent();
+
+        ship->receiveDamage();
     }
 
     return false;

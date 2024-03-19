@@ -19,8 +19,6 @@
 #define ENEMY_RED_SPRITE        "DEV/DevRed.png"
 #define ENEMY_FLAGSHIP_SPRITE   "DEV/DevFlagship"
 
-#define BASE_FONT               "fonts/arial.ttf"
-
 #define START_BUTTON_SPRITE     "DEV/DevButton.png"
 #define EXIT_BUTTON_SPRITE      "DEV/DevButton.png"
 

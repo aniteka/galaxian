@@ -36,19 +36,19 @@ bool EnemyShip::init()
     {
         case EnemyType::Blue:
             enemyShipFile = ENEMY_BLUE_SPRITE;
-            givenExp = 100.f;
+            givenScore = 100.f;
             break;
         case EnemyType::Purple:
             enemyShipFile = ENEMY_PURPLE_SPRITE;
-            givenExp = 200.f;
+            givenScore = 200.f;
             break;
         case EnemyType::Red:
             enemyShipFile = ENEMY_RED_SPRITE;
-            givenExp = 300.f;
+            givenScore = 300.f;
             break;
         case EnemyType::Flagship:
             enemyShipFile = ENEMY_FLAGSHIP_SPRITE;
-            givenExp = 500.f;
+            givenScore = 500.f;
             break;
         case EnemyType::None:
         default:
@@ -69,6 +69,10 @@ bool EnemyShip::init()
     physicsBody->setDynamic(false);
     physicsBody->setContactTestBitmask(0xFFFFFFFF);
     this->setPhysicsBody(physicsBody);
+
+    auto contactListener = EventListenerPhysicsContact::create();
+    contactListener->onContactBegin = CC_CALLBACK_1(EnemyShip::onContactBegin, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
     this->scheduleUpdate();
     return true;
@@ -123,7 +127,7 @@ void EnemyShip::launch()
         return;
     }
 
-    playerShip = playerShip ? playerShip : mainScene->getPlayerShip();
+    const auto playerShip = mainScene->getPlayerShip();
     if (!playerShip)
     {
         CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(playerShip));
@@ -143,6 +147,31 @@ void EnemyShip::launch()
     isLaunched = true;
 }
 
+bool EnemyShip::onContactBegin(PhysicsContact &contact)
+{
+    auto nodeA = contact.getShapeA()->getBody()->getNode();
+    auto nodeB = contact.getShapeB()->getBody()->getNode();
+
+    if(nodeA && nodeB
+       && (nodeA->getTag() == ENEMY_SHIP_TAG || nodeB->getTag() == ENEMY_SHIP_TAG)
+       && (nodeA->getTag() == PLAYER_SHIP_TAG || nodeB->getTag() == PLAYER_SHIP_TAG))
+    {
+        const auto self = dynamic_cast<EnemyShip*>(nodeA->getTag() == ENEMY_SHIP_TAG ? nodeA : nodeB);
+        const auto player = dynamic_cast<PlayerShip*>(nodeA->getTag() == PLAYER_SHIP_TAG ? nodeA : nodeB);
+        if(!self || !player)
+        {
+            CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(!self || !player));
+            return false;
+        }
+
+        self->removeFromParent();
+
+        player->receiveDamage();
+    }
+
+    return false;
+}
+
 void EnemyShip::rotateToPlayerShipUpdate(float delta)
 {
     const auto director = Director::getInstance();
@@ -159,7 +188,7 @@ void EnemyShip::rotateToPlayerShipUpdate(float delta)
         return;
     }
 
-    playerShip = playerShip ? playerShip : mainScene->getPlayerShip();
+    const auto playerShip = mainScene->getPlayerShip();
     if (!playerShip)
     {
         CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(playerShip));
@@ -188,7 +217,7 @@ void EnemyShip::shootingUpdate(float delta)
             return;
         }
 
-        playerShip = playerShip ? playerShip : mainScene->getPlayerShip();
+        const auto playerShip = mainScene->getPlayerShip();
         if (!playerShip)
         {
             CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(playerShip));
@@ -198,7 +227,7 @@ void EnemyShip::shootingUpdate(float delta)
         const auto enemyProjectile = EnemyProjectile::create();
         if(enemyProjectile)
         {
-            mainScene->addChild(enemyProjectile);
+            mainScene->getGameplayLayer()->addChild(enemyProjectile);
 
             enemyProjectile->setPosition(this->getPosition());
             enemyProjectile->setRotation(this->getRotation());
