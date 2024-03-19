@@ -17,9 +17,14 @@
 #define ENEMY_BLUE_SPRITE       "Enemies/Blue/Idle%i.png"
 #define ENEMY_BLUE_COUNT        2
 
-#define ENEMY_PURPLE_SPRITE     "Enemies/Blue/Idle1.png"
-#define ENEMY_RED_SPRITE        "Enemies/Blue/Idle1.png"
-#define ENEMY_FLAGSHIP_SPRITE   "Enemies/Blue/Idle1.png"
+#define ENEMY_PURPLE_SPRITE     "Enemies/Purple/Idle%i.png"
+#define ENEMY_PURPLE_COUNT      2
+
+#define ENEMY_RED_SPRITE        "Enemies/Red/Idle%i.png"
+#define ENEMY_RED_COUNT         2
+
+#define ENEMY_FLAGSHIP_SPRITE   "Enemies/Flagship/Idle%i.png"
+#define ENEMY_FLAGSHIP_COUNT    1
 
 #define START_BUTTON_SPRITE     "DEV/DevButton.png"
 #define EXIT_BUTTON_SPRITE      "DEV/DevButton.png"

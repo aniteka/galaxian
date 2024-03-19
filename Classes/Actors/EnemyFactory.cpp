@@ -19,26 +19,27 @@ bool EnemyFactory::init()
         return false;
     }
 
+    float offsetY = 30.f;
     for (int i = 0; i < 3; ++i)
     {
-        this->spawnEnemyRow(10, -45.f * (float)i, EnemyType::Blue);
+        this->spawnEnemyRow(10, -offsetY * (float)i, EnemyType::Blue);
     }
-    this->spawnEnemyRow(8, 45.f, EnemyType::Purple);
-    this->spawnEnemyRow(6, 45.f * 2.f, EnemyType::Red);
+    this->spawnEnemyRow(8, offsetY, EnemyType::Purple);
+    this->spawnEnemyRow(6, offsetY * 2.f, EnemyType::Red);
 
     const auto offset = director->getVisibleSize().width * offsetMul;
     const auto flagship1 = this->spawnEnemyShip(EnemyType::Flagship);
     if(flagship1)
     {
         flagship1->setPosition(Vec2(offset / 2.f + offset,
-                                    45.f * 3.f));
+                                    offsetY * 3.f));
     }
 
     const auto flagship2 = this->spawnEnemyShip(EnemyType::Flagship);
     if(flagship2)
     {
         flagship2->setPosition(Vec2(-(offset / 2.f + offset),
-                                    45.f * 3.f));
+                                    offsetY * 3.f));
     }
 
     this->scheduleUpdate();

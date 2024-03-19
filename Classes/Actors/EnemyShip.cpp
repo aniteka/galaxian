@@ -44,21 +44,21 @@ bool EnemyShip::init()
             givenScore = 100.f;
             break;
         case EnemyType::Purple:
-            sprite = StringUtils::format(ENEMY_BLUE_SPRITE, 1);
-            for(int i = 1; i <= ENEMY_BLUE_COUNT; ++i)
-                idleAnim->addSpriteFrameWithFile( StringUtils::format(ENEMY_BLUE_SPRITE, i) );
+            sprite = StringUtils::format(ENEMY_PURPLE_SPRITE, 1);
+            for(int i = 1; i <= ENEMY_PURPLE_COUNT; ++i)
+                idleAnim->addSpriteFrameWithFile( StringUtils::format(ENEMY_PURPLE_SPRITE, i) );
             givenScore = 200.f;
             break;
         case EnemyType::Red:
-            sprite = StringUtils::format(ENEMY_BLUE_SPRITE, 1);
-            for(int i = 1; i <= ENEMY_BLUE_COUNT; ++i)
-                idleAnim->addSpriteFrameWithFile( StringUtils::format(ENEMY_BLUE_SPRITE, i) );
+            sprite = StringUtils::format(ENEMY_RED_SPRITE, 1);
+            for(int i = 1; i <= ENEMY_RED_COUNT; ++i)
+                idleAnim->addSpriteFrameWithFile( StringUtils::format(ENEMY_RED_SPRITE, i) );
             givenScore = 300.f;
             break;
         case EnemyType::Flagship:
-            sprite = StringUtils::format(ENEMY_BLUE_SPRITE, 1);
-            for(int i = 1; i <= ENEMY_BLUE_COUNT; ++i)
-                idleAnim->addSpriteFrameWithFile( StringUtils::format(ENEMY_BLUE_SPRITE, i) );
+            sprite = StringUtils::format(ENEMY_FLAGSHIP_SPRITE, 1);
+            for(int i = 1; i <= ENEMY_FLAGSHIP_COUNT; ++i)
+                idleAnim->addSpriteFrameWithFile( StringUtils::format(ENEMY_FLAGSHIP_SPRITE, i) );
             givenScore = 500.f;
             break;
         case EnemyType::None:

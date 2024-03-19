@@ -37,6 +37,8 @@ public:
 protected:
     void gameplayEndCallback(float delay);
 
+    void bgMoving();
+
 protected:
     /*
      * MainMenu
@@ -49,6 +51,7 @@ protected:
     cocos2d::Layer* gameplayLayer = nullptr;
     EnemyFactory* enemyFactory = nullptr;
     PlayerShip* playerShip = nullptr;
+    cocos2d::Sprite* backgroundSprite = nullptr;
 
     cocos2d::Label* scoreLabel = nullptr;
     cocos2d::Label* hpLabel = nullptr;

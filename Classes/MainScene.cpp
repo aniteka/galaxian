@@ -10,7 +10,7 @@ USING_NS_CC;
 Scene* MainScene::createScene()
 {
     const auto scene = Scene::createWithPhysics();
-    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    //scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     auto layer = MainScene::create();
     scene->addChild(layer, 0, MAIN_SCENE_NAME);
     return scene;
@@ -115,13 +115,12 @@ void MainScene::setupGameplay()
     gameplayLayer = Layer::create();
     this->addChild(gameplayLayer);
 
-    const auto backgroundSprite = Sprite::create("Background.png");
+    backgroundSprite = Sprite::create("Background.png");
     if (backgroundSprite)
     {
         gameplayLayer->addChild(backgroundSprite, 0);
         backgroundSprite->setAnchorPoint(Vec2(0, 0));
-        backgroundSprite->setScale(director->getVisibleSize().height
-                                   / backgroundSprite->getContentSize().height);
+        bgMoving();
     }
     else
     {
@@ -161,7 +160,6 @@ void MainScene::setupGameplay()
     {
         scoreLabel->setAlignment(cocos2d::TextHAlignment::LEFT);
         scoreLabel->setAnchorPoint(Vec2(0,0.5));
-        scoreLabel->setTextColor(Color4B::BLACK);
         scoreLabel->setPosition(Vec2(0,
                                      director->getVisibleSize().height - scoreLabel->getContentSize().height / 2.f));
         gameplayLayer->addChild(scoreLabel, 1);
@@ -172,7 +170,6 @@ void MainScene::setupGameplay()
     {
         hpLabel->setAlignment(cocos2d::TextHAlignment::LEFT);
         hpLabel->setAnchorPoint(Vec2(0,0.5));
-        hpLabel->setTextColor(Color4B::BLACK);
         hpLabel->setPosition(Vec2(0,
                                      hpLabel->getContentSize().height / 2.f));
         gameplayLayer->addChild(hpLabel, 1);
@@ -193,6 +190,7 @@ void MainScene::releaseGameplay()
     playerShip = nullptr;
     scoreLabel = nullptr;
     hpLabel = nullptr;
+    backgroundSprite = nullptr;
 }
 
 void MainScene::gameplayEnd(float interval)
@@ -243,4 +241,18 @@ void MainScene::gameplayEndCallback(float delay)
                                           });
         gameplayLayer->addChild(exitButton, 1);
     }
+}
+
+void MainScene::bgMoving()
+{
+    if(!backgroundSprite) return;
+
+    backgroundSprite->setPosition(0, 0);
+
+    const auto moveDown = MoveTo::create(7.f, Vec2(0, -600));
+    const auto callbackEnd = CallFunc::create(CC_CALLBACK_0(MainScene::bgMoving, this));
+
+    const auto seq = Sequence::create(moveDown, callbackEnd, nullptr);
+
+    backgroundSprite->runAction(seq);
 }
