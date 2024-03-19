@@ -55,6 +55,17 @@ void MainScene::setupMainMenu()
     }
     this->addChild(mainMenu, 1);
 
+    const auto bg = Sprite::create("Background.png");
+    if (bg)
+    {
+        mainMenu->addChild(bg, 0);
+        bg->setAnchorPoint(Vec2(0, 0));
+    }
+    else
+    {
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(bg));
+    }
+
     const auto buttonStart = ui::Button::create(START_BUTTON_SPRITE,START_BUTTON_SPRITE,START_BUTTON_SPRITE);
     if(buttonStart)
     {
@@ -113,6 +124,11 @@ void MainScene::setupGameplay()
     }
 
     gameplayLayer = Layer::create();
+    if(!gameplayLayer)
+    {
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(gameplayLayer));
+        return;
+    }
     this->addChild(gameplayLayer);
 
     backgroundSprite = Sprite::create("Background.png");

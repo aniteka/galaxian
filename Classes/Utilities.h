@@ -26,8 +26,8 @@
 #define ENEMY_FLAGSHIP_SPRITE   "Enemies/Flagship/Idle%i.png"
 #define ENEMY_FLAGSHIP_COUNT    1
 
-#define START_BUTTON_SPRITE     "DEV/DevButton.png"
-#define EXIT_BUTTON_SPRITE      "DEV/DevButton.png"
-#define REPEAT_BUTTON_SPRITE    "DEV/DevButton.png"
+#define START_BUTTON_SPRITE     "Menu/StartButton.png"
+#define EXIT_BUTTON_SPRITE      "Menu/ExitButton.png"
+#define REPEAT_BUTTON_SPRITE    "Menu/RepeatButton.png"
 
 #endif //GALAXIAN_UTILITIES_H
