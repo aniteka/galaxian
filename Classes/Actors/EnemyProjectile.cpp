@@ -34,6 +34,8 @@ bool EnemyProjectile::init()
 void EnemyProjectile::update(float delta)
 {
     Node::update(delta);
+
+    collisionUpdate(delta);
 }
 
 void EnemyProjectile::launch(cocos2d::Vec2 pos)
@@ -67,4 +69,21 @@ bool EnemyProjectile::onContactBegin(PhysicsContact &contact)
     }
 
     return false;
+}
+
+void EnemyProjectile::collisionUpdate(float delta)
+{
+    const auto director = Director::getInstance();
+    if (!director)
+    {
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
+        return;
+    }
+
+    if(this->getPosition().y <= -15.f
+        || this->getPosition().y <= -15.f
+        || this->getPosition().y >= director->getVisibleSize().width + 15.f)
+    {
+        this->removeFromParent();
+    }
 }

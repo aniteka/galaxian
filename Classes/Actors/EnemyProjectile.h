@@ -18,6 +18,8 @@ public:
 protected:
     bool onContactBegin(cocos2d::PhysicsContact& contact);
 
+    void collisionUpdate(float delta);
+
     float speedMul = 0.004f;
 };
 

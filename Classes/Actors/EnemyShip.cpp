@@ -100,6 +100,8 @@ void EnemyShip::update(float delta)
         rotateToPlayerShipUpdate(delta);
         shootingUpdate(delta);
     }
+
+    collisionUpdate(delta);
 }
 
 float EnemyShip::getVisibleSizeWidth() const
@@ -251,6 +253,15 @@ void EnemyShip::shootingUpdate(float delta)
     currentShootingTimeout += delta;
 }
 
+void EnemyShip::collisionUpdate(float delta)
+{
+    const auto yPos = getParent()->convertToWorldSpace(this->getPosition()).y;
+    if(yPos <= -50.f)
+    {
+        this->setEnable(false);
+    }
+}
+
 void EnemyShip::rotateToPoint(cocos2d::Point point)
 {
     float nodeCurrentAngle = this->getRotation();
@@ -279,4 +290,3 @@ void EnemyShip::rotateToPoint(cocos2d::Point point)
 
     this->setRotation(rotation);
 }
-

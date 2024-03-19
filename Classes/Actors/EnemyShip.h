@@ -37,6 +37,7 @@ protected:
 
     void rotateToPlayerShipUpdate(float delta);
     void shootingUpdate(float delta);
+    void collisionUpdate(float delta);
 
     void rotateToPoint(cocos2d::Point point);
 

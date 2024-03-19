@@ -195,7 +195,6 @@ void MainScene::releaseGameplay()
 
 void MainScene::gameplayEnd(float interval)
 {
-    gameplayEnds = true;
     this->schedule(CC_SCHEDULE_SELECTOR(MainScene::gameplayEndCallback), interval, 0, interval);
 
     enemyFactory->unscheduleUpdate();
@@ -203,6 +202,7 @@ void MainScene::gameplayEnd(float interval)
 
 void MainScene::gameplayEndCallback(float delay)
 {
+    gameplayEnds = true;
     const auto director = Director::getInstance();
     if(!director)
     {
