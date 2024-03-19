@@ -26,10 +26,16 @@ public:
     void releaseMainMenu();
     void releaseGameplay();
 
+    void gameplayEnd(float interval);
+    bool isGameplayEnd() const { return gameplayEnds; }
+
     cocos2d::Layer* getMainMenuLayer() const { return mainMenu; };
     cocos2d::Layer* getGameplayLayer() const { return gameplayLayer; };
 
     CREATE_FUNC(MainScene);
+
+protected:
+    void gameplayEndCallback(float delay);
 
 protected:
     /*
@@ -47,6 +53,7 @@ protected:
     cocos2d::Label* scoreLabel = nullptr;
     cocos2d::Label* hpLabel = nullptr;
 
+    bool gameplayEnds = false;
     float maxScore = 0.f;
 };
 

@@ -103,6 +103,8 @@ void MainScene::setupMainMenu()
 
 void MainScene::setupGameplay()
 {
+    gameplayEnds = false;
+
     const auto director = Director::getInstance();
     if(!director)
     {
@@ -147,7 +149,7 @@ void MainScene::setupGameplay()
 
         enemyFactory->setPosition(
                 director->getVisibleSize().width / 2.f,
-                director->getVisibleSize().height * 0.85f);
+                director->getVisibleSize().height * 0.8f);
     }
     else
     {
@@ -191,4 +193,54 @@ void MainScene::releaseGameplay()
     playerShip = nullptr;
     scoreLabel = nullptr;
     hpLabel = nullptr;
+}
+
+void MainScene::gameplayEnd(float interval)
+{
+    gameplayEnds = true;
+    this->schedule(CC_SCHEDULE_SELECTOR(MainScene::gameplayEndCallback), interval, 0, interval);
+
+    enemyFactory->unscheduleUpdate();
+}
+
+void MainScene::gameplayEndCallback(float delay)
+{
+    const auto director = Director::getInstance();
+    if(!director)
+    {
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
+        return;
+    }
+
+    const auto repeatButton = ui::Button::create(REPEAT_BUTTON_SPRITE,REPEAT_BUTTON_SPRITE,REPEAT_BUTTON_SPRITE);
+    if(repeatButton)
+    {
+        repeatButton->setPosition(
+                Vec2(director->getVisibleSize().width / 2.f, director->getVisibleSize().height / 2.f + 40.f));
+        repeatButton->addTouchEventListener([&](Ref *sender, ui::Widget::TouchEventType type)
+                                           {
+                                               if (type == ui::Widget::TouchEventType::ENDED)
+                                               {
+                                                   releaseGameplay();
+                                                   setupGameplay();
+                                               }
+                                           });
+        gameplayLayer->addChild(repeatButton, 1);
+    }
+
+    const auto exitButton = ui::Button::create(EXIT_BUTTON_SPRITE,EXIT_BUTTON_SPRITE,EXIT_BUTTON_SPRITE);
+    if(exitButton)
+    {
+        exitButton->setPosition(
+                Vec2(director->getVisibleSize().width / 2.f, director->getVisibleSize().height / 2.f - 40.f));
+        exitButton->addTouchEventListener([&](Ref *sender, ui::Widget::TouchEventType type)
+                                          {
+                                              if (type == ui::Widget::TouchEventType::ENDED)
+                                              {
+                                                  releaseGameplay();
+                                                  setupMainMenu();
+                                              }
+                                          });
+        gameplayLayer->addChild(exitButton, 1);
+    }
 }

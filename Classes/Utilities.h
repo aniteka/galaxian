@@ -17,9 +17,10 @@
 #define ENEMY_BLUE_SPRITE       "DEV/DevBlue.png"
 #define ENEMY_PURPLE_SPRITE     "DEV/DevPurple.png"
 #define ENEMY_RED_SPRITE        "DEV/DevRed.png"
-#define ENEMY_FLAGSHIP_SPRITE   "DEV/DevFlagship"
+#define ENEMY_FLAGSHIP_SPRITE   "DEV/DevFlagship.png"
 
 #define START_BUTTON_SPRITE     "DEV/DevButton.png"
 #define EXIT_BUTTON_SPRITE      "DEV/DevButton.png"
+#define REPEAT_BUTTON_SPRITE    "DEV/DevButton.png"
 
 #endif //GALAXIAN_UTILITIES_H

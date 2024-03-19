@@ -61,14 +61,16 @@ void PlayerShip::receiveDamage()
         return;
     }
 
-    hp -= 1;
-
-    mainScene->updateGameplayMenu();
-
-    if(hp <= 0)
+    if(!mainScene->isGameplayEnd())
     {
-        mainScene->releaseGameplay();
-        mainScene->setupMainMenu();
+        hp -= 1;
+
+        mainScene->updateGameplayMenu();
+
+        if (hp <= 0)
+        {
+            mainScene->gameplayEnd(1.f);
+        }
     }
 }
 
@@ -208,8 +210,6 @@ void PlayerShip::onProjectileHit(cocos2d::Sprite* hitSprite)
 
     if(const auto ship = dynamic_cast<EnemyShip*>(hitSprite))
     {
-        score += ship->getScore();
-
         const auto director = Director::getInstance();
         if(!director)
         {
@@ -222,7 +222,12 @@ void PlayerShip::onProjectileHit(cocos2d::Sprite* hitSprite)
             CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(mainScene));
             return;
         }
-        mainScene->updateGameplayMenu();
+
+        if(!mainScene->isGameplayEnd())
+        {
+            score += ship->getScore();
+            mainScene->updateGameplayMenu();
+        }
     }
 }
 
