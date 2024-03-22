@@ -157,19 +157,7 @@ void MainScene::setupGameplay()
         CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(playerShip));
     }
 
-    enemyFactory = EnemyFactory::create();
-    if(enemyFactory)
-    {
-        gameplayLayer->addChild(enemyFactory);
-
-        enemyFactory->setPosition(
-                director->getVisibleSize().width / 2.f,
-                director->getVisibleSize().height * 0.8f);
-    }
-    else
-    {
-        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(enemyFactory));
-    }
+    restartEnemyFactory();
 
     scoreLabel = Label::createWithSystemFont(StringUtils::format("Score: %.0f", playerShip->getScore()), "Arial", 24);
     if(scoreLabel)
@@ -214,6 +202,39 @@ void MainScene::gameplayEnd(float interval)
     this->schedule(CC_SCHEDULE_SELECTOR(MainScene::gameplayEndCallback), interval, 0, interval);
 
     enemyFactory->unscheduleUpdate();
+}
+
+void MainScene::restartEnemyFactory()
+{
+    const auto director = Director::getInstance();
+    if(!director)
+    {
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
+        return;
+    }
+
+    if(enemyFactory)
+    {
+        enemyFactory->removeFromParent();
+        enemyFactory = nullptr;
+    }
+
+    enemyFactory = EnemyFactory::create();
+    if(enemyFactory)
+    {
+        gameplayLayer->addChild(enemyFactory);
+
+        enemyFactory->setPosition(
+                director->getVisibleSize().width / 2.f,
+                director->getVisibleSize().height * 1.5f);
+
+        enemyFactory->runAction(MoveTo::create(3.f, Vec2(director->getVisibleSize().width / 2.f,
+                                                         director->getVisibleSize().height * 0.8f)));
+    }
+    else
+    {
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(enemyFactory));
+    }
 }
 
 void MainScene::gameplayEndCallback(float delay)

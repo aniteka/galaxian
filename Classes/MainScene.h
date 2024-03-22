@@ -29,6 +29,8 @@ public:
     void gameplayEnd(float interval);
     bool isGameplayEnd() const { return gameplayEnds; }
 
+    void restartEnemyFactory();
+
     cocos2d::Layer* getMainMenuLayer() const { return mainMenu; };
     cocos2d::Layer* getGameplayLayer() const { return gameplayLayer; };
 

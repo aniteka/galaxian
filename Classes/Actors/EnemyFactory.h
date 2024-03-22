@@ -9,6 +9,7 @@ class EnemyFactory : public cocos2d::Node
 public:
     bool init() override;
     void update(float delta) override;
+    void onExit() override;
 
     const std::vector<EnemyShip*>& getEnemyShipsArray() const { return enemyShips; };
     std::vector<EnemyShip*>& getEnemyShipsArray() { return enemyShips; };
@@ -22,7 +23,9 @@ protected:
     EnemyShip* spawnEnemyShip(EnemyType enemyType);
     void spawnEnemyRow(int count, const float y, EnemyType enemyType);
 
-    EnemyShip* spawnCopyOfEnemy(EnemyShip* toCopy) const;
+    EnemyShip* spawnGameplayCopyOfEnemy(EnemyShip* toCopy) const;
+
+    void respawnShipInIntervalCallback(float interval);
 
 protected:
     const std::string moveUpdateKey = "moveUpdate";
@@ -30,6 +33,11 @@ protected:
     float movingDirMul = 1.f;
     float movingSpeed = 0.3f;
     float movingDownVal = 15.f;
+
+    float respawnInterval = 4.f;
+    int countOfRespawns = 15;
+    std::set<const EnemyShip*> respawningCurrentlyFixedShips;
+    std::set<EnemyShip*> respawningCurrentlyMovingShips;
 
     float offsetMul = 0.09f;
 
