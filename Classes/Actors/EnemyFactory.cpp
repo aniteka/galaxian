@@ -63,7 +63,8 @@ void EnemyFactory::onExit()
     {
         for (const auto item: respawningCurrentlyMovingShips)
         {
-            item->removeFromParent();
+            item->stopAllActions();
+            item->launch();
         }
     }
 
@@ -98,7 +99,7 @@ void EnemyFactory::launchRandomShipUpdate(float interval)
     currentInterval += interval;
     if(currentInterval > nextInterval)
     {
-        nextInterval = random<float>(2.f, 5.f);
+        nextInterval = random<float>(0.5f, 5.f);
         currentInterval = 0.f;
 
         const auto countOfEnabledFlagships = std::count_if(enemyShipsByTypes[EnemyType::Flagship].begin(),

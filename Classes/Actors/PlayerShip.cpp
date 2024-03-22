@@ -65,6 +65,7 @@ void PlayerShip::receiveDamage()
     if(!mainScene->isGameplayEnd())
     {
         hp -= 1;
+        if(hp < 0) hp = 0;
 
         mainScene->updateGameplayMenu();
 

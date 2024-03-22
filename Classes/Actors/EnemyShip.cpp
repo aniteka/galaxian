@@ -259,7 +259,7 @@ void EnemyShip::shootingUpdate(float delta)
     if(currentShootingTimeout > shootingTimeout)
     {
         currentShootingTimeout = 0.f;
-        shootingTimeout = random<float>(1.f, 2.f);
+        shootingTimeout = 100.f; // will never shoot again.
         const auto director = Director::getInstance();
         if (!director)
         {
@@ -281,16 +281,17 @@ void EnemyShip::shootingUpdate(float delta)
             return;
         }
 
-        const auto enemyProjectile = EnemyProjectile::create();
-        if(enemyProjectile)
-        {
-            mainScene->getGameplayLayer()->addChild(enemyProjectile);
+        this->schedule([this, mainScene, playerShip](float){
+            const auto enemyProjectile = EnemyProjectile::create();
+            if(enemyProjectile)
+            {
+                mainScene->getGameplayLayer()->addChild(enemyProjectile);
 
-            enemyProjectile->setPosition(this->getPosition());
-            enemyProjectile->setRotation(this->getRotation());
+                enemyProjectile->setPosition(this->getPosition());
+                enemyProjectile->setRotation(this->getRotation());
 
-            enemyProjectile->launch(playerShip->getPosition());
-        }
+                enemyProjectile->launch(playerShip->getPosition());
+            }}, 0.2f, 2, 0.f, "shooting");
     }
     currentShootingTimeout += delta;
 }
