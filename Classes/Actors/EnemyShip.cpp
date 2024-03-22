@@ -4,8 +4,12 @@
 #include "MainScene.h"
 #include "Actors/PlayerShip.h"
 #include "EnemyProjectile.h"
+#include "audio/include/AudioEngine.h"
 
 USING_NS_CC;
+
+int EnemyShip::flyingSoundId                        = AudioEngine::INVALID_AUDIO_ID;
+EnemyShip* EnemyShip::currentFlyingShipUsedSound    = nullptr;
 
 EnemyShip* EnemyShip::createEnemyShip(EnemyType inEnemyType)
 {
@@ -125,8 +129,14 @@ void EnemyShip::setEnable(bool inIsEnable)
         physicsBody->setEnabled(isEnable());
     }
 
-    if(isLaunched)
+    if(isLaunched && !isEnable())
     {
+        if(currentFlyingShipUsedSound == this)
+        {
+            AudioEngine::stop(flyingSoundId);
+            currentFlyingShipUsedSound = nullptr;
+        }
+
         this->removeFromParent();
     }
 }
@@ -178,7 +188,19 @@ void EnemyShip::launch(cocos2d::Vec2 location, float dir /* = 0*/)
     this->runAction(bb);
 
     isLaunched = true;
+
+    AudioEngine::stop(flyingSoundId);
+    flyingSoundId = AudioEngine::play2d(FLYING_SOUND);
+    currentFlyingShipUsedSound = this;
 }
+
+void EnemyShip::receiveDamage()
+{
+    this->setEnable(false);
+
+    AudioEngine::play2d(HIT_ENEMY_SOUND);
+}
+
 
 bool EnemyShip::onContactBegin(PhysicsContact &contact)
 {
@@ -198,6 +220,7 @@ bool EnemyShip::onContactBegin(PhysicsContact &contact)
         }
 
         self->removeFromParent();
+        AudioEngine::play2d(HIT_ENEMY_SOUND);
 
         player->receiveDamage();
     }
@@ -309,4 +332,3 @@ void EnemyShip::rotateToPoint(cocos2d::Point point)
 
     this->setRotation(rotation);
 }
-

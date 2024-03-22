@@ -4,6 +4,7 @@
 #include "Utilities.h"
 #include "EnemyShip.h"
 #include "MainScene.h"
+#include "audio/include/AudioEngine.h"
 
 USING_NS_CC;
 
@@ -191,6 +192,8 @@ void PlayerShip::shoot()
         projectileReal->setPosition(pos);
 
         projectileReal->launch();
+
+        AudioEngine::play2d(SHOOT_SOUND);
     }
     else
     {

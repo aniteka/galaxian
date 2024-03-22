@@ -100,7 +100,7 @@ bool Projectile::onContactBegin(PhysicsContact &contact)
 
         self->onHit(ship);
 
-        ship->setEnable(false);
+        ship->receiveDamage();
         self->removeFromParent();
     }
 

@@ -4,6 +4,7 @@
 #include "Actors/EnemyFactory.h"
 #include "Utilities.h"
 #include "ui/CocosGUI.h"
+#include "audio/include/AudioEngine.h"
 
 USING_NS_CC;
 
@@ -23,10 +24,22 @@ bool MainScene::init()
         return false;
     }
 
+    for(const char* const audio : PRELOAD_SOUND_LIST)
+    {
+        AudioEngine::preload(audio);
+    }
+
     setupMainMenu();
     //setupGameplay();
 
     return true;
+}
+
+void MainScene::onExit()
+{
+    AudioEngine::end();
+
+    Node::onExit();
 }
 
 void MainScene::updateGameplayMenu()
@@ -114,6 +127,8 @@ void MainScene::setupMainMenu()
 
 void MainScene::setupGameplay()
 {
+    AudioEngine::setEnabled(true);
+
     gameplayEnds = false;
 
     const auto director = Director::getInstance();
@@ -239,6 +254,8 @@ void MainScene::restartEnemyFactory()
 
 void MainScene::gameplayEndCallback(float delay)
 {
+    AudioEngine::stopAll();
+    AudioEngine::setEnabled(false);
     gameplayEnds = true;
     const auto director = Director::getInstance();
     if(!director)

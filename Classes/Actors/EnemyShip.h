@@ -37,6 +37,8 @@ public:
     void launch(float dir = 0.f);
     void launch(cocos2d::Vec2 location, float dir = 0.f);
 
+    void receiveDamage();
+
 protected:
     bool onContactBegin(cocos2d::PhysicsContact& contact);
 
@@ -55,7 +57,9 @@ protected:
     float currentShootingTimeout = 0.f;
 
     float givenScore = 0.f;
-};
 
+    static int flyingSoundId;
+    static EnemyShip* currentFlyingShipUsedSound;
+};
 
 #endif //GALAXIAN_ENEMYSHIP_H

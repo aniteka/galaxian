@@ -13,7 +13,8 @@ class MainScene : public cocos2d::Layer
 public:
     static cocos2d::Scene* createScene();
 
-    virtual bool init();
+    bool init() override;
+    void onExit() override;
 
     EnemyFactory* getEnemyFactory() { return enemyFactory; }
     PlayerShip* getPlayerShip() { return playerShip; }

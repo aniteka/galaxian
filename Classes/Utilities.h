@@ -30,4 +30,10 @@
 #define EXIT_BUTTON_SPRITE      "Menu/ExitButton.png"
 #define REPEAT_BUTTON_SPRITE    "Menu/RepeatButton.png"
 
+#define SHOOT_SOUND             "Sounds/Shoot.mp3"
+#define FLYING_SOUND            "Sounds/Flying Sound.mp3"
+#define HIT_ENEMY_SOUND         "Sounds/Hit Enemy.mp3"
+
+#define PRELOAD_SOUND_LIST      {SHOOT_SOUND, FLYING_SOUND, HIT_ENEMY_SOUND}
+
 #endif //GALAXIAN_UTILITIES_H
