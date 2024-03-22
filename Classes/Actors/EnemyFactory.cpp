@@ -2,9 +2,15 @@
 #include "EnemyShip.h"
 #include "Utilities.h"
 #include "MainScene.h"
+#include "PlayerShip.h"
 #include <iostream>
 
 USING_NS_CC;
+
+template <typename T> T CLAMP(const T& value, const T& low, const T& high)
+{
+    return value < low ? low : (value > high ? high : value);
+}
 
 bool EnemyFactory::init()
 {
@@ -26,21 +32,12 @@ bool EnemyFactory::init()
     }
     this->spawnEnemyRow(8, offsetY, EnemyType::Purple);
     this->spawnEnemyRow(6, offsetY * 2.f, EnemyType::Red);
+    this->spawnEnemyRow(6, offsetY * 3.f, EnemyType::Flagship);
 
-    const auto offset = director->getVisibleSize().width * offsetMul;
-    const auto flagship1 = this->spawnEnemyShip(EnemyType::Flagship);
-    if(flagship1)
-    {
-        flagship1->setPosition(Vec2(offset / 2.f + offset,
-                                    offsetY * 3.f));
-    }
-
-    const auto flagship2 = this->spawnEnemyShip(EnemyType::Flagship);
-    if(flagship2)
-    {
-        flagship2->setPosition(Vec2(-(offset / 2.f + offset),
-                                    offsetY * 3.f));
-    }
+    enemyShipsByTypes[EnemyType::Flagship][0]->setEnable(false);
+    enemyShipsByTypes[EnemyType::Flagship][2]->setEnable(false);
+    enemyShipsByTypes[EnemyType::Flagship][3]->setEnable(false);
+    enemyShipsByTypes[EnemyType::Flagship][5]->setEnable(false);
 
     this->schedule(CC_SCHEDULE_SELECTOR(EnemyFactory::respawnShipInIntervalCallback), respawnInterval, countOfRespawns, respawnInterval);
 
@@ -58,12 +55,19 @@ void EnemyFactory::update(float delta)
 
 void EnemyFactory::onExit()
 {
-    Node::onExit();
+    const auto director = Director::getInstance();
 
-    for (const auto item: respawningCurrentlyMovingShips)
+    if (director && director->getRunningScene() && director->getRunningScene()->isRunning()
+        && director->getRunningScene()->getChildByName<MainScene*>(MAIN_SCENE_NAME)->getGameplayLayer()
+        && director->getRunningScene()->getChildByName<MainScene*>(MAIN_SCENE_NAME)->getGameplayLayer()->isRunning())
     {
-        item->removeFromParent();
+        for (const auto item: respawningCurrentlyMovingShips)
+        {
+            item->removeFromParent();
+        }
     }
+
+    Node::onExit();
 }
 
 void EnemyFactory::moveUpdate(float interval)
@@ -97,11 +101,15 @@ void EnemyFactory::launchRandomShipUpdate(float interval)
         nextInterval = random<float>(2.f, 5.f);
         currentInterval = 0.f;
 
+        const auto countOfEnabledFlagships = std::count_if(enemyShipsByTypes[EnemyType::Flagship].begin(),
+                                                           enemyShipsByTypes[EnemyType::Flagship].end(),
+                                                           [](const EnemyShip* enemyShip){return enemyShip->isEnable(); });
+
         decltype(enemyShips) enabledEnemyShips;
         std::copy_if(enemyShips.begin(), enemyShips.end(), std::back_inserter(enabledEnemyShips),
-                     [](const EnemyShip* enemyShip)
+                     [countOfEnabledFlagships](const EnemyShip* enemyShip)
                      {
-                         return enemyShip->isEnable();
+                         return enemyShip->isEnable() && (countOfEnabledFlagships ? enemyShip->getEnemyType() != EnemyType::Red : true);
                      });
 
         if(enabledEnemyShips.empty())
@@ -128,9 +136,15 @@ void EnemyFactory::launchRandomShipUpdate(float interval)
         }
 
         auto& ship = enabledEnemyShips[random<int>(0, enabledEnemyShips.size() - 1)];
-        auto toLaunch = this->spawnGameplayCopyOfEnemy(ship);
-        toLaunch->launch();
-        ship->setEnable(false);
+
+        if(ship->getEnemyType() == EnemyType::Flagship)
+        {
+            flagshipLaunch(ship);
+        }
+        else
+        {
+            baseLaunch(ship);
+        }
     }
 }
 
@@ -144,6 +158,8 @@ EnemyShip* EnemyFactory::spawnEnemyShip(EnemyType enemyType)
     }
     this->addChild(enemyShip);
     enemyShips.push_back(enemyShip);
+    enemyShipsByTypes.try_emplace(enemyType, EnemyVector{});
+    enemyShipsByTypes[enemyType].push_back(enemyShip);
 
     return enemyShip;
 }
@@ -179,7 +195,7 @@ void EnemyFactory::spawnEnemyRow(int count, const float y, EnemyType enemyType)
     }
 }
 
-EnemyShip* EnemyFactory::spawnGameplayCopyOfEnemy(EnemyShip *toCopy) const
+EnemyShip* EnemyFactory::spawnGameplayCopyOfEnemy(EnemyShip* toCopy) const
 {
     const auto director = Director::getInstance();
     if(!director)
@@ -210,6 +226,7 @@ EnemyShip* EnemyFactory::spawnGameplayCopyOfEnemy(EnemyShip *toCopy) const
 
 void EnemyFactory::respawnShipInIntervalCallback(float interval)
 {
+    currentCountOfRespawns += 1;
     const auto director = Director::getInstance();
     if(!director)
     {
@@ -217,17 +234,23 @@ void EnemyFactory::respawnShipInIntervalCallback(float interval)
         return;
     }
 
-    decltype(enemyShips) enabledDisabledShips;
-    std::copy_if(enemyShips.begin(), enemyShips.end(), std::back_inserter(enabledDisabledShips),
+    decltype(enemyShips) disabledShips;
+    std::copy_if(enemyShips.begin(), enemyShips.end(), std::back_inserter(disabledShips),
                  [this](const EnemyShip* enemyShip)
                  {
-                     return !enemyShip->isEnable() && respawningCurrentlyFixedShips.find(enemyShip) == respawningCurrentlyFixedShips.end();
+                     if(enemyShip->getEnemyType() == EnemyType::Flagship)
+                         return !enemyShip->isEnable()
+                                && respawningCurrentlyFixedShips.find(enemyShip) == respawningCurrentlyFixedShips.end()
+                                && respawnsNeededForFlagshipRespawn < currentCountOfRespawns;
+
+                     return !enemyShip->isEnable()
+                        && respawningCurrentlyFixedShips.find(enemyShip) == respawningCurrentlyFixedShips.end();
                  });
 
-    if(enabledDisabledShips.empty())
+    if(disabledShips.empty())
         return;
 
-    const auto toRespawn = enabledDisabledShips[random<unsigned int>(0, enabledDisabledShips.size() - 1)];
+    const auto toRespawn = disabledShips[random<unsigned int>(0, disabledShips.size() - 1)];
     respawningCurrentlyFixedShips.insert(toRespawn);
 
     const auto ship = spawnGameplayCopyOfEnemy(toRespawn);
@@ -256,4 +279,57 @@ void EnemyFactory::respawnShipInIntervalCallback(float interval)
 
     ship->runAction( Sequence::create(bb, cf, nullptr) );
 }
+
+EnemyShip* EnemyFactory::baseLaunch(EnemyShip* enemyShip, float dir /*= 0.f*/)
+{
+    auto toLaunch = this->spawnGameplayCopyOfEnemy(enemyShip);
+    toLaunch->launch(dir);
+    enemyShip->setEnable(false);
+
+    return toLaunch;
+}
+
+void EnemyFactory::flagshipLaunch(EnemyShip* enemyShip)
+{
+    const auto director = Director::getInstance();
+    if(!director)
+    {
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(director));
+        return;
+    }
+    const auto mainScene = dynamic_cast<MainScene*>(director->getRunningScene()->getChildByName(MAIN_SCENE_NAME));
+    if(!mainScene)
+    {
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(mainScene));
+        return;
+    }
+    const auto playerShip = mainScene->getPlayerShip();
+    if (!playerShip)
+    {
+        CCLOGERROR("%s", GENERATE_ERROR_MESSAGE(playerShip));
+        return;
+    }
+
+    const auto dir = random<int>(0, 1) ? 1.f : -1.f;
+    const auto toLaunchFlagship = this->spawnGameplayCopyOfEnemy(enemyShip);
+    toLaunchFlagship->launch(playerShip->getPosition(), dir);
+    enemyShip->setEnable(false);
+
+    const auto& flagships = enemyShipsByTypes[EnemyType::Flagship];
+    const auto& redships = enemyShipsByTypes[EnemyType::Red];
+
+    const auto index = std::find(flagships.begin(), flagships.end(), enemyShip) - flagships.begin();
+
+    int pos = -1;
+    for(int i = CLAMP<int>(index - 1, 0, redships.size() - 1); i <= CLAMP<int>(index + 1, 0, redships.size() - 1); ++i, ++pos)
+    {
+        if(!redships[i]->isEnable())
+            continue;
+        const auto toLaunch = this->spawnGameplayCopyOfEnemy(redships[i]);
+        toLaunch->launch(playerShip->getPosition() + (toLaunch->getPosition() - toLaunchFlagship->getPosition()), dir);
+        redships[i]->setEnable(false);
+    }
+}
+
+
 

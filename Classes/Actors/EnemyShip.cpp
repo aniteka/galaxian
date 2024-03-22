@@ -87,6 +87,8 @@ bool EnemyShip::init()
     contactListener->onContactBegin = CC_CALLBACK_1(EnemyShip::onContactBegin, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
+    shootingTimeout = random<float>(1.f, 2.f);
+
     this->scheduleUpdate();
     return true;
 }
@@ -118,7 +120,10 @@ void EnemyShip::setEnable(bool inIsEnable)
 {
     _isEnable = inIsEnable;
     this->setVisible(isEnable());
-    this->getPhysicsBody()->setEnabled(isEnable());
+    if(const auto physicsBody = this->getPhysicsBody())
+    {
+        physicsBody->setEnabled(isEnable());
+    }
 
     if(isLaunched)
     {
@@ -126,7 +131,7 @@ void EnemyShip::setEnable(bool inIsEnable)
     }
 }
 
-void EnemyShip::launch()
+void EnemyShip::launch(float dir /* = 0*/)
 {
     const auto director = Director::getInstance();
     if(!director)
@@ -149,12 +154,25 @@ void EnemyShip::launch()
         return;
     }
 
-    const float mul = random<int>(0, 1) ? 1.f : -1.f;
+    launch(playerShip->getPosition(), dir);
+}
+
+void EnemyShip::launch(cocos2d::Vec2 location, float dir /* = 0*/)
+{
+    float mul;
+    if(dir == 0.f)
+    {
+        mul = random<int>(0, 1) ? 1.f : -1.f;
+    }
+    else
+    {
+        mul = dir;
+    }
 
     ccBezierConfig bezierConfig;
     bezierConfig.controlPoint_1 = Vec2(200 * mul, 100);
-    bezierConfig.controlPoint_2 = (playerShip->getPosition() - this->getPosition()) + Vec2(100 * mul, 400);
-    bezierConfig.endPosition = playerShip->getPosition() - this->getPosition() - Vec2(0, 100);
+    bezierConfig.controlPoint_2 = (location - this->getPosition()) + Vec2(100 * mul, 400);
+    bezierConfig.endPosition = location - this->getPosition() - Vec2(0, 100);
     auto bb = BezierBy::create(5, bezierConfig);
 
     this->runAction(bb);
@@ -218,6 +236,7 @@ void EnemyShip::shootingUpdate(float delta)
     if(currentShootingTimeout > shootingTimeout)
     {
         currentShootingTimeout = 0.f;
+        shootingTimeout = random<float>(1.f, 2.f);
         const auto director = Director::getInstance();
         if (!director)
         {
@@ -290,3 +309,4 @@ void EnemyShip::rotateToPoint(cocos2d::Point point)
 
     this->setRotation(rotation);
 }
+

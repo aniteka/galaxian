@@ -6,6 +6,8 @@
 
 class EnemyFactory : public cocos2d::Node
 {
+    using EnemyVector = std::vector<EnemyShip*>;
+
 public:
     bool init() override;
     void update(float delta) override;
@@ -27,6 +29,9 @@ protected:
 
     void respawnShipInIntervalCallback(float interval);
 
+    EnemyShip* baseLaunch(EnemyShip* enemyShip, float dir = 0.f);
+    void flagshipLaunch(EnemyShip* enemyShip);
+
 protected:
     const std::string moveUpdateKey = "moveUpdate";
     bool movingRight = true;
@@ -36,12 +41,15 @@ protected:
 
     float respawnInterval = 4.f;
     int countOfRespawns = 15;
+    int currentCountOfRespawns = 0;
+    int respawnsNeededForFlagshipRespawn = 6;
     std::set<const EnemyShip*> respawningCurrentlyFixedShips;
     std::set<EnemyShip*> respawningCurrentlyMovingShips;
 
     float offsetMul = 0.09f;
 
-    std::vector<EnemyShip*> enemyShips;
+    EnemyVector enemyShips;
+    std::map<EnemyType, EnemyVector> enemyShipsByTypes;
 
 private:
     float nextInterval = 5.f;

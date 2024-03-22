@@ -30,7 +30,12 @@ public:
     EnemyType getEnemyType() const { return enemyType; }
     float getScore() const { return givenScore; }
 
-    void launch();
+    /*
+     * 0.f == random
+     * value should be 1.f, -1.f or 0.f
+     */
+    void launch(float dir = 0.f);
+    void launch(cocos2d::Vec2 location, float dir = 0.f);
 
 protected:
     bool onContactBegin(cocos2d::PhysicsContact& contact);
